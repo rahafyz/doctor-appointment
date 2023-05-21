@@ -1,6 +1,5 @@
 package com.blubank.doctorappointment.model;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,29 +9,31 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "Patient")
+@Table(name = "appointment_slot")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
-public class Patient {
+@NoArgsConstructor
+public class AppointmentSlot {
 
     @Id
     private Long id;
 
-    @Column
-    private String name;
+    @Column(name = "start_time")
+    private LocalDate startTime;
 
-    @Column(name = "phone_number")
-    @NotNull
-    private String phoneNumber;
+    @Column(name = "end_time")
+    private LocalDate endTime;
 
-    @OneToMany
-    @JoinColumn(name = "appointment_list")
-    private List<Appointment> appointmentList;
+    @Column(name = "is_available")
+    private boolean isAvailable;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
     @Column(name = "created_date")
     @CreatedDate
