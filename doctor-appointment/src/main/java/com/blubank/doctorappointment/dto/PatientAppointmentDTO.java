@@ -1,6 +1,8 @@
 package com.blubank.doctorappointment.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -12,7 +14,9 @@ public class PatientAppointmentDTO {
 
     @Getter
     @Setter
-    private static class AppointmentDTO{
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AppointmentDTO{
         private AppointmentSlotDTO appointmentSlot;
     }
 }
