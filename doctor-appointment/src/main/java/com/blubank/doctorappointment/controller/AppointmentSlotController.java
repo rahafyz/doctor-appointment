@@ -21,24 +21,24 @@ public class AppointmentSlotController {
 
     private AppointmentSlotService appointmentSlotService;
 
-    @PostMapping( "/api/v1")
-    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid TimeDTO timeDTO){
+    @PostMapping("/api/v1")
+    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid TimeDTO timeDTO) {
         return ResponseEntity.ok(appointmentSlotService.save(timeDTO));
     }
 
     @GetMapping("/api/v1")
-    public ResponseEntity<List<AppointmentSlotDTO>> getOpenAppointments(){
+    public ResponseEntity<List<AppointmentSlotDTO>> getOpenAppointments() {
         return ResponseEntity.ok(appointmentSlotService.getOpenAppointments());
     }
 
     @DeleteMapping("/api/v1/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable Long id){
+    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         appointmentSlotService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/api/v1/appointments")
-    public ResponseEntity<List<AppointmentSlotDTO>> getByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+    public ResponseEntity<List<AppointmentSlotDTO>> getByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.ok(appointmentSlotService.getByDate(date));
     }
 }
