@@ -28,7 +28,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     private final AppointmentSlotMapper mapper;
 
     @Value("${doctor.appointment.time.interval}")
-    private static int timeInterval;
+    private int timeInterval;
 
     @Override
     public AppointmentSlot getById(Long id) {
