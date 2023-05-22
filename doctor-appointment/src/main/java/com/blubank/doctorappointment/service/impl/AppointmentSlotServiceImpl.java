@@ -38,10 +38,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     }
 
     @Override
-    public List<AppointmentSlot> save(TimeDTO dto) {
+    public List<AppointmentSlotDTO> save(TimeDTO dto) {
         if (!timeValidation(dto))
             throw new CustomException("invalid time", HttpStatus.BAD_REQUEST);
-        return repository.saveAll(setTimeInterval(dto));
+        return mapper.toDTOList(repository.saveAll(setTimeInterval(dto)));
     }
 
     @Override

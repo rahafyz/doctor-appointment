@@ -10,7 +10,7 @@ import java.util.List;
 public interface AppointmentSlotService {
 
     AppointmentSlot getById(Long id);
-    List<AppointmentSlot> save(TimeDTO dto);
+    List<AppointmentSlotDTO> save(TimeDTO dto);
 
     List<AppointmentSlotDTO> getOpenAppointments();
 
