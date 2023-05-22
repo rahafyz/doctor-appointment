@@ -10,5 +10,4 @@ import java.time.LocalDateTime;
 public class AppointmentSlotDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Boolean is_available;
 }
