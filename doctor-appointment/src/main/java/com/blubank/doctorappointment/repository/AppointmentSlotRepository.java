@@ -1,9 +1,10 @@
 package com.blubank.doctorappointment.repository;
 
 import com.blubank.doctorappointment.model.Appointment;
+import com.blubank.doctorappointment.model.AppointmentSlot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AppointmentSlotRepository extends JpaRepository<Appointment,Long> {
+public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot,Long> {
 }
