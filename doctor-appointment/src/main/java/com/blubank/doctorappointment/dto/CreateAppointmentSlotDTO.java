@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class TimeDTO {
+public class CreateAppointmentSlotDTO {
     @NotNull
     private LocalDateTime startTime;
     @NotNull
