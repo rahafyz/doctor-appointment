@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AppointmentSlotController {
 
-    private AppointmentSlotService appointmentSlotService;
+    private final AppointmentSlotService appointmentSlotService;
 
     @PostMapping("/api/v1")
     public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid TimeDTO timeDTO) {
