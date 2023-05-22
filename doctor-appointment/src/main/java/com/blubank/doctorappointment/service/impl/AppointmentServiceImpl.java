@@ -17,7 +17,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper mapper;
 
     @Override
-    public List<AppointmentDTO> getAll() {
+    public List<AppointmentDTO> findAll() {
         return mapper.toDTOList(repository.findAll());
     }
 }

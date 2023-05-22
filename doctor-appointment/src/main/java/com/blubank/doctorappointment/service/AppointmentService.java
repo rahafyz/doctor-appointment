@@ -5,5 +5,5 @@ import com.blubank.doctorappointment.dto.AppointmentDTO;
 import java.util.List;
 
 public interface AppointmentService {
-    List<AppointmentDTO> getAll();
+    List<AppointmentDTO> findAll();
 }
