@@ -10,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -32,7 +31,7 @@ public class AppointmentSlot {
     private LocalDateTime endTime;
 
     @Column(name = "is_available")
-    private boolean isAvailable;
+    private Boolean isAvailable;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")
