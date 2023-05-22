@@ -23,8 +23,6 @@ public class ResponseDto {
 
     private String message;
 
-    private String stackTrace;
-
     private Object data;
 
 
