@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/patient")
+@RequestMapping(value = "/api/v1/patient")
 @RequiredArgsConstructor
 public class PatientController {
 
     private final PatientService patientService;
 
-    @GetMapping("/api/v1/appointments")
+    @GetMapping("/appointments")
     public ResponseEntity<PatientAppointmentDTO> getAppointments(@RequestParam String phoneNumber){
         return ResponseEntity.ok(patientService.getAppointments(phoneNumber));
     }

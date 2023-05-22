@@ -1,7 +1,7 @@
 package com.blubank.doctorappointment.controller;
 
 import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
-import com.blubank.doctorappointment.dto.TimeDTO;
+import com.blubank.doctorappointment.dto.CreateAppointmentSlotDTO;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,29 +14,29 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/appointment-slot")
+@RequestMapping(value = "/api/v1/appointment-slot")
 @RequiredArgsConstructor
 public class AppointmentSlotController {
 
     private final AppointmentSlotService appointmentSlotService;
 
-    @PostMapping("/api/v1")
-    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid TimeDTO timeDTO) {
+    @PostMapping("")
+    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid CreateAppointmentSlotDTO timeDTO) {
         return ResponseEntity.ok(appointmentSlotService.save(timeDTO));
     }
 
-    @GetMapping("/api/v1/appointments")
+    @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentSlotDTO>> getOpenAppointments(@RequestParam long doctorId) {
         return ResponseEntity.ok(appointmentSlotService.getOpenAppointments(doctorId));
     }
 
-    @DeleteMapping("/api/v1/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         appointmentSlotService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/appointments")
+    @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentSlotDTO>> getByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.ok(appointmentSlotService.getByDate(date));
     }

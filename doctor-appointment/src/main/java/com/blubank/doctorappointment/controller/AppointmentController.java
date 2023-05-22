@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/appointment")
+@RequestMapping(value = "api/v1/appointment")
 @RequiredArgsConstructor
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
     @GetMapping
-    public ResponseEntity<List<AppointmentDTO>> get(){
-        return ResponseEntity.ok(appointmentService.getAll());
+    public ResponseEntity<List<AppointmentDTO>> findAll(){
+        return ResponseEntity.ok(appointmentService.findAll());
     }
 }
