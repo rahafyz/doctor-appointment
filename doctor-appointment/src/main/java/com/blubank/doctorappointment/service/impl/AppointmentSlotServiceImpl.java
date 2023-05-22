@@ -1,7 +1,7 @@
 package com.blubank.doctorappointment.service.impl;
 
 import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
-import com.blubank.doctorappointment.dto.TimeDTO;
+import com.blubank.doctorappointment.dto.CreateAppointmentSlotDTO;
 import com.blubank.doctorappointment.exception.CustomException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
@@ -38,7 +38,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     }
 
     @Override
-    public List<AppointmentSlotDTO> save(TimeDTO dto) {
+    public List<AppointmentSlotDTO> save(CreateAppointmentSlotDTO dto) {
         if (!timeValidation(dto))
             throw new CustomException("invalid time", HttpStatus.BAD_REQUEST);
         return mapper.toDTOList(repository.saveAll(setTimeInterval(dto)));
@@ -67,7 +67,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     }
 
 
-    private List<AppointmentSlot> setTimeInterval(TimeDTO dto) {
+    private List<AppointmentSlot> setTimeInterval(CreateAppointmentSlotDTO dto) {
         List<AppointmentSlot> timeSlots = new ArrayList<>();
 
         long numSlots = Duration.between(dto.getStartTime(), dto.getEndTime()).toMinutes() / timeInterval;
@@ -87,7 +87,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         return timeSlots;
     }
 
-    private boolean timeValidation(TimeDTO dto) {
+    private boolean timeValidation(CreateAppointmentSlotDTO dto) {
         return dto.getStartTime().isBefore(dto.getEndTime());
     }
 
