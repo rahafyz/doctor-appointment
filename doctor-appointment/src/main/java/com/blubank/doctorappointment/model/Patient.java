@@ -1,13 +1,12 @@
 package com.blubank.doctorappointment.model;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,7 +14,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "Patient")
-@Data
+@Getter
+@Setter
+@EntityListeners(value = AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Patient {
