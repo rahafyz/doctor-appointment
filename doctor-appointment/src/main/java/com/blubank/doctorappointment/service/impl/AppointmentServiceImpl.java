@@ -13,10 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +31,10 @@ public class AppointmentServiceImpl implements AppointmentSlotService {
     private static int timeInterval;
 
     @Override
-    public AppointmentSlotDTO getById(Long id) {
-        AppointmentSlot appointmentSlot = repository.findById(id).orElseThrow(
+    public AppointmentSlot getById(Long id) {
+        return repository.findById(id).orElseThrow(
                 () -> new CustomException("no appointment found", HttpStatus.NOT_FOUND)
         );
-        return mapper.toDTO(appointmentSlot);
     }
 
     @Override
@@ -45,11 +45,25 @@ public class AppointmentServiceImpl implements AppointmentSlotService {
     }
 
     @Override
+    public List<AppointmentSlotDTO> getOpenAppointments() {
+        return mapper.toDTOList(repository.findByAvailableTrue());
+    }
+
+    @Override
     public void delete(Long id) {
-        AppointmentSlotDTO appointmentSlot = getById(id);
-        if(!deleteValidation(appointmentSlot))
-            throw new CustomException("this appointment is taken",HttpStatus.NOT_ACCEPTABLE);
+        AppointmentSlot appointmentSlot = getById(id);
+        if (!isAvailable(appointmentSlot))
+            throw new CustomException("this appointment is taken", HttpStatus.NOT_ACCEPTABLE);
         repository.deleteById(id);
+    }
+
+    @Override
+    public List<AppointmentSlotDTO> getByDate(LocalDate date) {
+        LocalDateTime startTime = date.atStartOfDay();
+        LocalDateTime endTime = date.atTime(23, 59);
+        List<AppointmentSlot> appointmentSlots = repository.findByStartTimeBetween(startTime, endTime).stream()
+                .filter(this::isAvailable).collect(Collectors.toList());
+        return mapper.toDTOList(appointmentSlots);
     }
 
 
@@ -77,7 +91,7 @@ public class AppointmentServiceImpl implements AppointmentSlotService {
         return dto.getStartTime().isBefore(dto.getEndTime());
     }
 
-    private boolean deleteValidation(AppointmentSlotDTO appointmentSlot){
-        return Boolean.TRUE.equals(appointmentSlot.getIs_available());
+    private boolean isAvailable(AppointmentSlot appointmentSlot) {
+        return Boolean.TRUE.equals(appointmentSlot.getIsAvailable());
     }
 }
