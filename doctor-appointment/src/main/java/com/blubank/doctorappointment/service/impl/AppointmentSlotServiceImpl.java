@@ -45,8 +45,8 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     }
 
     @Override
-    public List<AppointmentSlotDTO> getOpenAppointments() {
-        return mapper.toDTOList(repository.findByIsAvailableTrue());
+    public List<AppointmentSlotDTO> getOpenAppointments(Long doctorId) {
+        return mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(doctorId));
     }
 
     @Override

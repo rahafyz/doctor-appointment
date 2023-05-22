@@ -25,9 +25,9 @@ public class AppointmentSlotController {
         return ResponseEntity.ok(appointmentSlotService.save(timeDTO));
     }
 
-    @GetMapping("/api/v1")
-    public ResponseEntity<List<AppointmentSlotDTO>> getOpenAppointments() {
-        return ResponseEntity.ok(appointmentSlotService.getOpenAppointments());
+    @GetMapping("/api/v1/appointments")
+    public ResponseEntity<List<AppointmentSlotDTO>> getOpenAppointments(@RequestParam long doctorId) {
+        return ResponseEntity.ok(appointmentSlotService.getOpenAppointments(doctorId));
     }
 
     @DeleteMapping("/api/v1/{id}")

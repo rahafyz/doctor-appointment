@@ -12,7 +12,7 @@ public interface AppointmentSlotService {
     AppointmentSlot getById(Long id);
     List<AppointmentSlotDTO> save(TimeDTO dto);
 
-    List<AppointmentSlotDTO> getOpenAppointments();
+    List<AppointmentSlotDTO> getOpenAppointments(Long doctorId);
 
     void delete(Long id);
 
