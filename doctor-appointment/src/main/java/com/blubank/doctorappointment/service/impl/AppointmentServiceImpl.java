@@ -1,7 +1,9 @@
 package com.blubank.doctorappointment.service.impl;
 
+import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
 import com.blubank.doctorappointment.dto.TimeDTO;
 import com.blubank.doctorappointment.exception.CustomException;
+import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
@@ -14,6 +16,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +24,18 @@ public class AppointmentServiceImpl implements AppointmentSlotService {
 
     private final AppointmentSlotRepository repository;
 
+    private final AppointmentSlotMapper mapper;
+
     @Value("${doctor.appointment.time.interval}")
-    private static int TIME_INTERVAL;
+    private static int timeInterval;
+
+    @Override
+    public AppointmentSlotDTO getById(Long id) {
+        AppointmentSlot appointmentSlot = repository.findById(id).orElseThrow(
+                () -> new CustomException("no appointment found", HttpStatus.NOT_FOUND)
+        );
+        return mapper.toDTO(appointmentSlot);
+    }
 
     @Override
     public List<AppointmentSlot> save(TimeDTO dto) {
@@ -31,10 +44,19 @@ public class AppointmentServiceImpl implements AppointmentSlotService {
         return repository.saveAll(setTimeInterval(dto));
     }
 
+    @Override
+    public void delete(Long id) {
+        AppointmentSlotDTO appointmentSlot = getById(id);
+        if(!deleteValidation(appointmentSlot))
+            throw new CustomException("this appointment is taken",HttpStatus.NOT_ACCEPTABLE);
+        repository.deleteById(id);
+    }
+
+
     private List<AppointmentSlot> setTimeInterval(TimeDTO dto) {
         List<AppointmentSlot> timeSlots = new ArrayList<>();
 
-        long numSlots = Duration.between(dto.getStartTime(), dto.getEndTime()).toMinutes() / TIME_INTERVAL;
+        long numSlots = Duration.between(dto.getStartTime(), dto.getEndTime()).toMinutes() / timeInterval;
 
         if (numSlots == 0)
             return timeSlots;
@@ -53,5 +75,9 @@ public class AppointmentServiceImpl implements AppointmentSlotService {
 
     private boolean timeValidation(TimeDTO dto) {
         return dto.getStartTime().isBefore(dto.getEndTime());
+    }
+
+    private boolean deleteValidation(AppointmentSlotDTO appointmentSlot){
+        return Boolean.TRUE.equals(appointmentSlot.getIs_available());
     }
 }
