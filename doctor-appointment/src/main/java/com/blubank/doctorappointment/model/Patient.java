@@ -23,10 +23,10 @@ public class Patient {
     @Id
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number",nullable = false,unique = true)
     @NotNull
     private String phoneNumber;
 
