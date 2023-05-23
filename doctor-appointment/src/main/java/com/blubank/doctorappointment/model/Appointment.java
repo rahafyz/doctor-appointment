@@ -24,7 +24,7 @@ public class Appointment {
     @Id
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "appointment_slot")
     private AppointmentSlot appointmentSlot;
 

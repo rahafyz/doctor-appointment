@@ -25,8 +25,8 @@ public class AppointmentSlotController {
         return ResponseEntity.ok(appointmentSlotService.save(timeDTO));
     }
 
-    @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentSlotDTO>> getOpenAppointments(@RequestParam long doctorId) {
+    @GetMapping("/appointments/{doctorId}")
+    public ResponseEntity<List<AppointmentSlotDTO>> getOpenAppointments(@PathVariable long doctorId) {
         return ResponseEntity.ok(appointmentSlotService.getOpenAppointments(doctorId));
     }
 

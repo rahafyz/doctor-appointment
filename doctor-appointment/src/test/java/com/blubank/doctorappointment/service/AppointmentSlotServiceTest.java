@@ -1,6 +1,8 @@
 package com.blubank.doctorappointment.service;
 
+import com.blubank.doctorappointment.exception.AppointmentSlotNotFoundException;
 import com.blubank.doctorappointment.exception.CustomException;
+import com.blubank.doctorappointment.exception.InvalidTimeException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
@@ -55,7 +57,7 @@ class AppointmentSlotServiceTest {
     void getById_whenNotFound_shouldThrowException() {
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CustomException.class, () -> {
+        Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> {
             service.getById(ID);
         });
     }
@@ -74,7 +76,7 @@ class AppointmentSlotServiceTest {
 
     @Test
     void save_whenInvalidTime_shouldThrowException(){
-        Assertions.assertThrows(CustomException.class, () -> {
+        Assertions.assertThrows(InvalidTimeException.class, () -> {
             service.save(createInvalidAppointmentSlotDTO());
         });
     }
@@ -120,7 +122,7 @@ class AppointmentSlotServiceTest {
     void delete_whenAppointmentNotFound_shouldThrowException(){
         when(repository.findById(ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CustomException.class, () -> {
+        Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> {
             service.delete(ID);
         });
     }

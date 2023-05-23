@@ -9,4 +9,6 @@ public interface AppointmentService {
 
     AppointmentDTO create(CreateAppointmentDTO createAppointmentDTO);
     List<AppointmentDTO> findAll();
+
+
 }

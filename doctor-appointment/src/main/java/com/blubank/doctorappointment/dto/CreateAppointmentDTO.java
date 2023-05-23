@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class CreateAppointmentDTO {
-    AppointmentSlotDTO appointmentSlot;
-    PatientDTO patient;
+    private AppointmentSlotDTO appointmentSlot;
+    private PatientDTO patient;
 }

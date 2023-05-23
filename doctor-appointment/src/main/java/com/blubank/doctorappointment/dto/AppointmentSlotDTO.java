@@ -17,4 +17,5 @@ public class AppointmentSlotDTO {
     private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private Boolean isAvailable;
 }

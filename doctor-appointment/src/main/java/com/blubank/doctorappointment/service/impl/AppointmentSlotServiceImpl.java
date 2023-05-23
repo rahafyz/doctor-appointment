@@ -2,13 +2,14 @@ package com.blubank.doctorappointment.service.impl;
 
 import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
 import com.blubank.doctorappointment.dto.CreateAppointmentSlotDTO;
-import com.blubank.doctorappointment.exception.CustomException;
+import com.blubank.doctorappointment.exception.AppointmentSlotNotFoundException;
+import com.blubank.doctorappointment.exception.InvalidTimeException;
+import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     @Transactional(readOnly = true)
     public AppointmentSlot getById(Long id) {
         return repository.findById(id).orElseThrow(
-                () -> new CustomException("no appointment found", HttpStatus.NOT_FOUND)
+                AppointmentSlotNotFoundException::new
         );
     }
 
@@ -48,7 +49,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     @Transactional
     public List<AppointmentSlotDTO> save(CreateAppointmentSlotDTO dto) {
         if (!isTimeValid.test(dto))
-            throw new CustomException("invalid time", HttpStatus.BAD_REQUEST);
+            throw new InvalidTimeException();
         if (setTimeInterval(dto).isEmpty())
             return Collections.emptyList();
         return mapper.toDTOList(repository.saveAll(setTimeInterval(dto)));
@@ -65,7 +66,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     public void delete(Long id) {
         AppointmentSlot appointmentSlot = getById(id);
         if (!isAvailable.test(appointmentSlot))
-            throw new CustomException("this appointment is taken", HttpStatus.NOT_ACCEPTABLE);
+            throw new ReservedAppointmentSlotException();
         repository.deleteById(id);
     }
 

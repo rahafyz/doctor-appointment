@@ -1,16 +1,20 @@
-/*
 package com.blubank.doctorappointment.config;
 
 import com.hazelcast.config.*;
 import com.hazelcast.spi.merge.PutIfAbsentMergePolicy;
-import org.hibernate.internal.util.collections.BoundedConcurrentHashMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 public class HazelcastConfig {
+    @Value("${doctor.appointment.time-to-live}")
+    private Integer timeToLiveSeconds;
+
 
     @Bean
     public Config hazelcast() {
@@ -32,7 +36,7 @@ public class HazelcastConfig {
         config.addMapConfig(eventStoreMap);
         config.addMapConfig(sentNotificationsMap);
         config.setProperty("hazelcast.jmx", "true");
-
+        configStorage(config);
         config.getNetworkConfig()
                 .getJoin()
                 .getMulticastConfig()
@@ -44,4 +48,16 @@ public class HazelcastConfig {
         tcpIpConfig.setMembers(Collections.singletonList("127.0.0.1"));
         return config;
     }
-}*/
+
+    private void configStorage(Config config) {
+        List<String> cacheNames = Arrays.asList(
+                "patient-cache",
+                "appointment-cache",
+                "appointment-slot-cache"
+        );
+        cacheNames.forEach(cache ->
+                config.addMapConfig(new MapConfig(cache).setTimeToLiveSeconds(timeToLiveSeconds))
+        );
+    }
+
+}
