@@ -1,7 +1,9 @@
 package com.blubank.doctorappointment.service.impl;
 
 import com.blubank.doctorappointment.dto.AppointmentDTO;
+import com.blubank.doctorappointment.dto.CreateAppointmentDTO;
 import com.blubank.doctorappointment.mapper.AppointmentMapper;
+import com.blubank.doctorappointment.model.Appointment;
 import com.blubank.doctorappointment.repository.AppointmentRepository;
 import com.blubank.doctorappointment.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository repository;
     private final AppointmentMapper mapper;
+
+    @Override
+    public AppointmentDTO create(CreateAppointmentDTO createAppointmentDTO) {
+        Appointment appointment = repository.save(mapper.toEntity(createAppointmentDTO));
+        return mapper.toDTO(appointment);
+    }
 
     @Override
     public List<AppointmentDTO> findAll() {

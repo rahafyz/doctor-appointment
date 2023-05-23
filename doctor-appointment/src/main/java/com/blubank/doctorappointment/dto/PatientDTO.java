@@ -1,10 +1,7 @@
 package com.blubank.doctorappointment.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -25,6 +22,7 @@ public class PatientDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
     public static class AppointmentDTO{
         private AppointmentSlotDTO appointmentSlot;
     }
