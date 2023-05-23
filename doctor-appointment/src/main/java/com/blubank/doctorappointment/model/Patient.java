@@ -1,6 +1,5 @@
 package com.blubank.doctorappointment.model;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,6 +23,7 @@ import java.util.List;
 public class Patient {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

@@ -23,7 +23,6 @@ public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //seq???
     private Long id;
 
     @Column

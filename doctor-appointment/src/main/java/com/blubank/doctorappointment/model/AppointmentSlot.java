@@ -23,6 +23,7 @@ import java.util.Date;
 public class AppointmentSlot {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "start_time")

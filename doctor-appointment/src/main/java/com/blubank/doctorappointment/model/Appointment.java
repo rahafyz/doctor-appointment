@@ -22,6 +22,7 @@ import java.util.Date;
 public class Appointment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
