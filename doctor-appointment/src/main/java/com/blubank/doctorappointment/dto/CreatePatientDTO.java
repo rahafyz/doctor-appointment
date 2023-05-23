@@ -15,5 +15,4 @@ public class CreatePatientDTO {
     @NotNull
     private String phoneNumber;
 
-    private Long appointmentSlotId;
 }

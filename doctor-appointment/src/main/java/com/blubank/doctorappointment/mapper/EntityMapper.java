@@ -1,5 +1,8 @@
 package com.blubank.doctorappointment.mapper;
 
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+
 import java.util.List;
 
 public interface EntityMapper<T,D>{
@@ -8,4 +11,7 @@ public interface EntityMapper<T,D>{
 
     List<T> toEntityList(List<D> dto);
     List<D> toDTOList(List<T> entity);
+
+    @Named("partialUpdate")
+    void partialUpdate(@MappingTarget T entity, D dto);
 }

@@ -1,6 +1,7 @@
 package com.blubank.doctorappointment.service.impl;
 
-import com.blubank.doctorappointment.dto.PatientAppointmentDTO;
+import com.blubank.doctorappointment.dto.CreatePatientDTO;
+import com.blubank.doctorappointment.dto.PatientDTO;
 import com.blubank.doctorappointment.exception.CustomException;
 import com.blubank.doctorappointment.mapper.PatientMapper;
 import com.blubank.doctorappointment.model.Patient;
@@ -28,10 +29,27 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientAppointmentDTO getAppointments(String phoneNumber) {
+    public List<PatientDTO.AppointmentDTO> getAppointments(String phoneNumber) {
         Patient patient = get(phoneNumber).orElseThrow(
                 ()-> new CustomException("there is no patient by this phone number", HttpStatus.NOT_FOUND)
         );
-        return mapper.toDTO(patient);
+        return mapper.toDTO(patient).getAppointmentList();
+    }
+
+    @Override
+    public PatientDTO create(CreatePatientDTO patientDTO) {
+        if (get(patientDTO.getPhoneNumber()).isPresent())
+            throw new CustomException("there is a patient by this phone number",HttpStatus.CONFLICT);
+        Patient patient = mapper.toEntity(patientDTO);
+        return mapper.toDTO(repository.save(patient));
+    }
+
+    @Override
+    public PatientDTO update(Long id, PatientDTO patientDTO) {
+        Patient patient = repository.findById(id).orElseThrow(
+                ()-> new CustomException("patient not found", HttpStatus.NOT_FOUND)
+        );
+        mapper.partialUpdate(patient,patientDTO);
+        return mapper.toDTO(repository.save(patient));
     }
 }

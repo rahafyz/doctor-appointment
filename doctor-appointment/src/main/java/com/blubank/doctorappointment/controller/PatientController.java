@@ -1,6 +1,6 @@
 package com.blubank.doctorappointment.controller;
 
-import com.blubank.doctorappointment.dto.PatientAppointmentDTO;
+import com.blubank.doctorappointment.dto.PatientDTO;
 import com.blubank.doctorappointment.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/patient")
@@ -17,7 +19,7 @@ public class PatientController {
     private final PatientService patientService;
 
     @GetMapping("/appointments")
-    public ResponseEntity<PatientAppointmentDTO> getAppointments(@RequestParam String phoneNumber){
+    public ResponseEntity<List<PatientDTO.AppointmentDTO>> getAppointments(@RequestParam String phoneNumber){
         return ResponseEntity.ok(patientService.getAppointments(phoneNumber));
     }
 
