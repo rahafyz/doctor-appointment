@@ -13,6 +13,7 @@ import com.blubank.doctorappointment.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -27,8 +28,9 @@ public class AppointmentFacadeServiceImpl implements AppointmentFacadeService {
     private final AppointmentService appointmentService;
 
     @Override
+    @Transactional
     public AppointmentDTO reserveAppointment(ReserveAppointmentDTO reserveDTO) {
-        PatientDTO patientDTO = getPatient(reserveDTO.getPatientDTO());
+        PatientDTO patientDTO = createPatient(reserveDTO.getPatientDTO());
 
         AppointmentSlotDTO appointmentSlotDTO = getAppointmentSlot(reserveDTO.getAppointmentSlotId());
 
@@ -39,12 +41,10 @@ public class AppointmentFacadeServiceImpl implements AppointmentFacadeService {
         patientDTO.getAppointmentList().add(PatientDTO.AppointmentDTO.builder()
                 .appointmentSlot(appointmentDTO.getAppointmentSlot()).build());
 
-        patientService.update(patientDTO.getId(),patientDTO);
-
         return appointmentDTO;
     }
 
-    private PatientDTO getPatient(CreatePatientDTO patientDTO){
+    private PatientDTO createPatient(CreatePatientDTO patientDTO){
         Optional<Patient> patient = patientService.get(patientDTO.getPhoneNumber());
         if (patient.isPresent())
             return patientMapper.toDTO(patient.get());

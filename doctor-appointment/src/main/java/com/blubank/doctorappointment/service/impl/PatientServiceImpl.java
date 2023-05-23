@@ -10,6 +10,7 @@ import com.blubank.doctorappointment.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class PatientServiceImpl implements PatientService {
     //exceptions in controller
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Patient> get(String phoneNumber) {
         return repository.findByPhoneNumber(phoneNumber);
     }
@@ -37,6 +39,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public PatientDTO create(CreatePatientDTO patientDTO) {
         if (get(patientDTO.getPhoneNumber()).isPresent())
             throw new CustomException("there is a patient by this phone number",HttpStatus.CONFLICT);
@@ -45,6 +48,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public PatientDTO update(Long id, PatientDTO patientDTO) {
         Patient patient = repository.findById(id).orElseThrow(
                 ()-> new CustomException("patient not found", HttpStatus.NOT_FOUND)

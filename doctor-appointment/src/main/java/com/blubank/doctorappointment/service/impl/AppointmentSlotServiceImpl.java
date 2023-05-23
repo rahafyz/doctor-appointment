@@ -8,9 +8,9 @@ import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,11 +28,16 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     private final AppointmentSlotRepository repository;
 
     private final AppointmentSlotMapper mapper;
+    private final Predicate<CreateAppointmentSlotDTO> isTimeValid = createAppointmentSlotDTO ->
+            createAppointmentSlotDTO.getStartTime().isBefore(createAppointmentSlotDTO.getEndTime());
 
-    @Value("${doctor.appointment.time.interval}")
-    private int timeInterval;
+    private final Predicate<AppointmentSlot> isAvailable = appointmentSlot -> Boolean.TRUE.equals(appointmentSlot.getIsAvailable());
+
+    //    @Value("${doctor.appointment.time.interval}")
+    private int timeInterval = 30;
 
     @Override
+    @Transactional(readOnly = true)
     public AppointmentSlot getById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new CustomException("no appointment found", HttpStatus.NOT_FOUND)
@@ -39,8 +45,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     }
 
     @Override
+    @Transactional
     public List<AppointmentSlotDTO> save(CreateAppointmentSlotDTO dto) {
-        if (!timeValidation(dto))
+        if (!isTimeValid.test(dto))
             throw new CustomException("invalid time", HttpStatus.BAD_REQUEST);
         if (setTimeInterval(dto).isEmpty())
             return Collections.emptyList();
@@ -48,24 +55,27 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AppointmentSlotDTO> getOpenAppointments(Long doctorId) {
         return mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(doctorId));
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         AppointmentSlot appointmentSlot = getById(id);
-        if (!isAvailable(appointmentSlot))
+        if (!isAvailable.test(appointmentSlot))
             throw new CustomException("this appointment is taken", HttpStatus.NOT_ACCEPTABLE);
         repository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AppointmentSlotDTO> getByDate(LocalDate date) {
         LocalDateTime startTime = date.atStartOfDay();
         LocalDateTime endTime = date.atTime(23, 59);
         List<AppointmentSlot> appointmentSlots = repository.findByStartTimeBetween(startTime, endTime).stream()
-                .filter(this::isAvailable).collect(Collectors.toList());
+                .filter(isAvailable).collect(Collectors.toList());
         return mapper.toDTOList(appointmentSlots);
     }
 
@@ -88,13 +98,5 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             slotTime = slotTime.plusMinutes(30);
         }
         return timeSlots;
-    }
-
-    private boolean timeValidation(CreateAppointmentSlotDTO dto) {
-        return dto.getStartTime().isBefore(dto.getEndTime());
-    }
-
-    private boolean isAvailable(AppointmentSlot appointmentSlot) {
-        return Boolean.TRUE.equals(appointmentSlot.getIsAvailable());
     }
 }

@@ -8,6 +8,7 @@ import com.blubank.doctorappointment.repository.AppointmentRepository;
 import com.blubank.doctorappointment.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,12 +20,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper mapper;
 
     @Override
+    @Transactional
     public AppointmentDTO create(CreateAppointmentDTO createAppointmentDTO) {
         Appointment appointment = repository.save(mapper.toEntity(createAppointmentDTO));
         return mapper.toDTO(appointment);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AppointmentDTO> findAll() {
         return mapper.toDTOList(repository.findAll());
     }
