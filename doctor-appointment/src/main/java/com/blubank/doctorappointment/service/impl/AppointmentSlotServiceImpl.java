@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,8 +74,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     public List<AppointmentSlotDTO> getByDate(LocalDate date) {
         LocalDateTime startTime = date.atStartOfDay();
         LocalDateTime endTime = date.atTime(23, 59);
-        List<AppointmentSlot> appointmentSlots = repository.findByStartTimeBetween(startTime, endTime).stream()
-                .filter(isAvailable).collect(Collectors.toList());
+        List<AppointmentSlot> appointmentSlots = repository.findByIsAvailableAndStartTimeBetween(true,startTime, endTime);
         return mapper.toDTOList(appointmentSlots);
     }
 
