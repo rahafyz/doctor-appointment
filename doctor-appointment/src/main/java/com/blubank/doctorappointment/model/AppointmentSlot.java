@@ -18,6 +18,7 @@ import java.util.Date;
 @EntityListeners(value = AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Builder
 public class AppointmentSlot {
 

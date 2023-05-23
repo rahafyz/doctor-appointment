@@ -17,6 +17,8 @@ import java.util.Date;
 @EntityListeners(value = AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@EqualsAndHashCode
 public class Doctor {
 
     @Id

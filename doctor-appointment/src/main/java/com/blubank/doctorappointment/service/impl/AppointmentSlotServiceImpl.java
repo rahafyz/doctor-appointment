@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,8 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     public List<AppointmentSlotDTO> save(CreateAppointmentSlotDTO dto) {
         if (!timeValidation(dto))
             throw new CustomException("invalid time", HttpStatus.BAD_REQUEST);
+        if (setTimeInterval(dto).isEmpty())
+            return Collections.emptyList();
         return mapper.toDTOList(repository.saveAll(setTimeInterval(dto)));
     }
 
@@ -76,7 +79,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             return timeSlots;
 
         LocalDateTime slotTime = dto.getStartTime();
-        for (int i = 0; i <= numSlots; i++) {
+        for (int i = 0; i < numSlots; i++) {
             AppointmentSlot slot = AppointmentSlot.builder()
                     .startTime(slotTime)
                     .endTime(slotTime.plusMinutes(30))
