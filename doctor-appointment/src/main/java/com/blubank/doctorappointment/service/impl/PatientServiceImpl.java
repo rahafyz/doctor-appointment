@@ -30,7 +30,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientDTO.AppointmentDTO> getAppointments(String phoneNumber) {
-        Patient patient = get(phoneNumber).orElseThrow(
+        Patient patient = this.get(phoneNumber).orElseThrow(
                 ()-> new CustomException("there is no patient by this phone number", HttpStatus.NOT_FOUND)
         );
         return mapper.toDTO(patient).getAppointmentList();

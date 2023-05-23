@@ -1,8 +1,6 @@
 package com.blubank.doctorappointment.model;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -17,6 +15,10 @@ import java.util.Date;
 @Getter
 @Setter
 @EntityListeners(value = AuditingEntityListener.class)
+@Builder
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 public class Appointment {
 
     @Id

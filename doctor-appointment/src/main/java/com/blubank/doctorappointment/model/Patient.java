@@ -18,7 +18,9 @@ import java.util.List;
 @Setter
 @EntityListeners(value = AuditingEntityListener.class)
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode
 public class Patient {
 
     @Id
@@ -28,7 +30,6 @@ public class Patient {
     private String name;
 
     @Column(name = "phone_number",nullable = false,unique = true)
-    @NotNull
     private String phoneNumber;
 
     @OneToMany

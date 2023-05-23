@@ -26,11 +26,11 @@ import static org.mockito.Mockito.*;
 class AppointmentSlotServiceTest {
 
     @Mock
-    AppointmentSlotRepository repository;
+    private AppointmentSlotRepository repository;
     @Mock
-    AppointmentSlotMapper mapper;
+    private AppointmentSlotMapper mapper;
 
-    AppointmentSlotService service;
+    private AppointmentSlotService service;
     private static final Long ID = 1L;
 
     @BeforeEach

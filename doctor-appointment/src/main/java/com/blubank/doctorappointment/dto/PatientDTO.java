@@ -1,15 +1,14 @@
 package com.blubank.doctorappointment.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@EqualsAndHashCode
 public class PatientDTO {
 
     @JsonIgnore
@@ -25,6 +24,8 @@ public class PatientDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
+    @EqualsAndHashCode
     public static class AppointmentDTO{
         private AppointmentSlotDTO appointmentSlot;
     }
