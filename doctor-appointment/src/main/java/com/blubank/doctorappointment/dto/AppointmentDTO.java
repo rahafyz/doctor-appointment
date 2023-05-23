@@ -1,12 +1,11 @@
 package com.blubank.doctorappointment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@EqualsAndHashCode
 public class AppointmentDTO {
     private AppointmentSlotDTO appointmentSlot;
     private AppointmentDTO.PatientDTO patient;
@@ -15,6 +14,8 @@ public class AppointmentDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @EqualsAndHashCode
+    @Builder
     public static class PatientDTO{
         private String name;
         private String phoneNumber;

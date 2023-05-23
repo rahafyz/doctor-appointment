@@ -10,7 +10,7 @@ import static com.blubank.doctorappointment.util.AppointmentData.appointment;
 import static com.blubank.doctorappointment.util.AppointmentSlotData.appointmentSlotDTO;
 
 public class PatientData {
-    private static final String NAME = "name";
+    public static final String NAME = "name";
     public static final String PHONE_NUMBER = "09121234567";
 
     public static Patient patient(){
