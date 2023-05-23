@@ -26,7 +26,7 @@ public class Appointment {
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "appointment_slot")
+    @JoinColumn(name = "appointment_slot_id")
     private AppointmentSlot appointmentSlot;
 
     @ManyToOne

@@ -3,6 +3,7 @@ package com.blubank.doctorappointment.service;
 import com.blubank.doctorappointment.exception.AppointmentSlotNotFoundException;
 import com.blubank.doctorappointment.exception.CustomException;
 import com.blubank.doctorappointment.exception.InvalidTimeException;
+import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -34,6 +37,8 @@ class AppointmentSlotServiceTest {
 
     private AppointmentSlotService service;
     private static final Long ID = 1L;
+
+    private static final Pageable pageable = PageRequest.of(0, 1);
 
     @BeforeEach
     void init() {
@@ -57,9 +62,7 @@ class AppointmentSlotServiceTest {
     void getById_whenNotFound_shouldThrowException() {
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> {
-            service.getById(ID);
-        });
+        Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> service.getById(ID));
     }
 
     @Test
@@ -76,9 +79,7 @@ class AppointmentSlotServiceTest {
 
     @Test
     void save_whenInvalidTime_shouldThrowException(){
-        Assertions.assertThrows(InvalidTimeException.class, () -> {
-            service.save(createInvalidAppointmentSlotDTO());
-        });
+        Assertions.assertThrows(InvalidTimeException.class, () -> service.save(createInvalidAppointmentSlotDTO()));
     }
 
     @Test
@@ -92,21 +93,21 @@ class AppointmentSlotServiceTest {
     @Test
     void getOpenAppointments_shouldReturnAppointmentSlotDTOList(){
         repository.saveAll(List.of(appointmentSlot(),takenAppointmentSlot()));
-        when(mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(ID))).thenReturn(appointmentSlotDTOList());
+        when(mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable))).thenReturn(appointmentSlotDTOList());
 
-        Assertions.assertEquals(appointmentSlotDTOList(),service.getOpenAppointments(ID));
+        Assertions.assertEquals(appointmentSlotDTOList(),service.getOpenAppointments(ID,pageable));
 
-        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), service.getOpenAppointments(ID).toArray());
+        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), service.getOpenAppointments(ID,pageable).toArray());
 
-        Assertions.assertEquals(appointmentSlotDTOList().size(), service.getOpenAppointments(ID).size());
+        Assertions.assertEquals(appointmentSlotDTOList().size(), service.getOpenAppointments(ID,pageable).size());
 
     }
 
     @Test
     void getOpenAppointments_whenNoOpenAppointment_shouldReturnEmptyList(){
-        when(mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(ID))).thenReturn(Collections.EMPTY_LIST);
+        when(mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable))).thenReturn(Collections.EMPTY_LIST);
 
-        Assertions.assertEquals(Collections.EMPTY_LIST, service.getOpenAppointments(ID));
+        Assertions.assertEquals(Collections.EMPTY_LIST, service.getOpenAppointments(ID,pageable));
 
     }
 
@@ -122,36 +123,32 @@ class AppointmentSlotServiceTest {
     void delete_whenAppointmentNotFound_shouldThrowException(){
         when(repository.findById(ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> {
-            service.delete(ID);
-        });
+        Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> service.delete(ID));
     }
     @Test
     void delete_whenAppointmentIsTaken_shouldThrowException(){
         when(repository.findById(ID)).thenReturn(Optional.ofNullable(takenAppointmentSlot()));
 
-        Assertions.assertThrows(CustomException.class, () -> {
-            service.delete(ID);
-        });
+        Assertions.assertThrows(ReservedAppointmentSlotException.class, () -> service.delete(ID));
     }
 
     @Test
     void getByDate_shouldReturnAppointmentSlotDTOList(){
-        when(mapper.toDTOList(repository.findByStartTimeBetween(DATE.atStartOfDay(),DATE.atTime(23, 59))))
+        when(mapper.toDTOList(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable)))
                 .thenReturn(appointmentSlotDTOList());
 
-        Assertions.assertEquals(appointmentSlotDTOList(),service.getByDate(LocalDate.now()));
+        Assertions.assertEquals(appointmentSlotDTOList(),service.getByDate(LocalDate.now(),pageable));
 
-        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), service.getByDate(LocalDate.now()).toArray());
+        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), service.getByDate(LocalDate.now(),pageable).toArray());
 
-        Assertions.assertEquals(appointmentSlotDTOList().size(), service.getByDate(LocalDate.now()).size());
+        Assertions.assertEquals(appointmentSlotDTOList().size(), service.getByDate(LocalDate.now(),pageable).size());
     }
     @Test
     void getByDate_whenNoOpenAppointment_shouldReturnEmptyList(){
-        when(mapper.toDTOList(repository.findByStartTimeBetween(DATE.atStartOfDay(),DATE.atTime(23, 59))))
+        when(mapper.toDTOList(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable)))
                 .thenReturn(Collections.EMPTY_LIST);
 
-        Assertions.assertEquals(Collections.EMPTY_LIST, service.getByDate(LocalDate.now()));
+        Assertions.assertEquals(Collections.EMPTY_LIST, service.getByDate(LocalDate.now(),pageable));
     }
 
 }

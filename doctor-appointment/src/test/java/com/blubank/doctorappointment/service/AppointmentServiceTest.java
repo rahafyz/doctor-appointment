@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,8 @@ class AppointmentServiceTest {
 
     private AppointmentService service;
 
+    private static final Pageable pageable = PageRequest.of(0, 1);
+
     @BeforeEach
     void init() {
         service = new AppointmentServiceImpl(repository, mapper);
@@ -35,19 +39,19 @@ class AppointmentServiceTest {
 
     @Test
     void findAll_shouldReturnAppointmentDTOList(){
-        when(mapper.toDTOList(repository.findAll())).thenReturn(List.of(appointmentDTO()));
+        when(mapper.toDTOList(repository.findAll(pageable).getContent())).thenReturn(List.of(appointmentDTO()));
 
-        Assertions.assertEquals(List.of(appointmentDTO()),service.findAll());
+        Assertions.assertEquals(List.of(appointmentDTO()),service.findAll(pageable));
 
-        Assertions.assertArrayEquals(List.of(appointmentDTO()).toArray(), service.findAll().toArray());
+        Assertions.assertArrayEquals(List.of(appointmentDTO()).toArray(), service.findAll(pageable).toArray());
 
-        Assertions.assertEquals(List.of(appointmentDTO()).size(), service.findAll().size());
+        Assertions.assertEquals(List.of(appointmentDTO()).size(), service.findAll(pageable).size());
     }
 
     @Test
     void findAll_whenNoAppointment_shouldReturnEmptyList(){
         when(mapper.toDTOList(repository.findAll())).thenReturn(Collections.emptyList());
 
-        Assertions.assertEquals(Collections.EMPTY_LIST, service.findAll());
+        Assertions.assertEquals(Collections.EMPTY_LIST, service.findAll(pageable));
     }
 }

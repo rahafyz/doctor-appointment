@@ -10,6 +10,7 @@ import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,8 +57,8 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentSlotDTO> getOpenAppointments(Long doctorId) {
-        return mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(doctorId));
+    public List<AppointmentSlotDTO> getOpenAppointments(Long doctorId, Pageable pageable) {
+        return mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(doctorId,pageable));
     }
 
     @Override
@@ -71,10 +72,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentSlotDTO> getByDate(LocalDate date) {
+    public List<AppointmentSlotDTO> getByDate(LocalDate date, Pageable pageable) {
         LocalDateTime startTime = date.atStartOfDay();
         LocalDateTime endTime = date.atTime(23, 59);
-        List<AppointmentSlot> appointmentSlots = repository.findByIsAvailableAndStartTimeBetween(true,startTime, endTime);
+        List<AppointmentSlot> appointmentSlots = repository.findByIsAvailableAndStartTimeBetween(true,startTime, endTime,pageable);
         return mapper.toDTOList(appointmentSlots);
     }
 

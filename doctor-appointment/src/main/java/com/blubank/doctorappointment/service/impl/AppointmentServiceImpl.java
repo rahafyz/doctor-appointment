@@ -7,6 +7,7 @@ import com.blubank.doctorappointment.model.Appointment;
 import com.blubank.doctorappointment.repository.AppointmentRepository;
 import com.blubank.doctorappointment.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentDTO> findAll() {
-        return mapper.toDTOList(repository.findAll());
+    public List<AppointmentDTO> findAll(Pageable pageable) {
+        return mapper.toDTOList(repository.findAll(pageable).getContent());
     }
 }

@@ -4,6 +4,7 @@ import com.blubank.doctorappointment.model.AppointmentSlot;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +18,9 @@ import java.util.Optional;
 public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot,Long> {
 
     @Cacheable(key = "#root.methodName + #p0")
-    List<AppointmentSlot> findByDoctor_IdAndIsAvailableTrue(Long doctorId);
+    List<AppointmentSlot> findByDoctor_IdAndIsAvailableTrue(Long doctorId, Pageable pageable);
 
-    List<AppointmentSlot> findByIsAvailableAndStartTimeBetween(Boolean status,LocalDateTime startTime,LocalDateTime endTime);
+    List<AppointmentSlot> findByIsAvailableAndStartTimeBetween(Boolean status,LocalDateTime startTime,LocalDateTime endTime, Pageable pageable);
 
     @Cacheable(key = "#root.methodName + #p0")
     @Override

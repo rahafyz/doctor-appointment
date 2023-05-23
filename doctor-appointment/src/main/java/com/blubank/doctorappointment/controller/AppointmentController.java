@@ -5,6 +5,7 @@ import com.blubank.doctorappointment.dto.ReserveAppointmentDTO;
 import com.blubank.doctorappointment.service.AppointmentFacadeService;
 import com.blubank.doctorappointment.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,8 @@ public class AppointmentController {
     private final AppointmentFacadeService appointmentFacadeService;
 
     @GetMapping
-    public ResponseEntity<List<AppointmentDTO>> findAll(){
-        return ResponseEntity.ok(appointmentService.findAll());
+    public ResponseEntity<List<AppointmentDTO>> findAll(Pageable pageable){
+        return ResponseEntity.ok(appointmentService.findAll(pageable));
     }
 
     @PostMapping
