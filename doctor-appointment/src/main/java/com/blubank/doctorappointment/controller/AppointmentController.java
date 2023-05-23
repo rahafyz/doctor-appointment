@@ -1,13 +1,14 @@
 package com.blubank.doctorappointment.controller;
 
 import com.blubank.doctorappointment.dto.AppointmentDTO;
+import com.blubank.doctorappointment.dto.ReserveAppointmentDTO;
+import com.blubank.doctorappointment.service.AppointmentFacadeService;
 import com.blubank.doctorappointment.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,9 +17,15 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    private final AppointmentFacadeService appointmentFacadeService;
 
     @GetMapping
     public ResponseEntity<List<AppointmentDTO>> findAll(){
         return ResponseEntity.ok(appointmentService.findAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<AppointmentDTO> reserve(@RequestBody @Valid ReserveAppointmentDTO reserveAppointmentDTO){
+        return ResponseEntity.ok(appointmentFacadeService.reserveAppointment(reserveAppointmentDTO));
     }
 }
