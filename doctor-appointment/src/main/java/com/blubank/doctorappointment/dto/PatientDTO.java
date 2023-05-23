@@ -1,6 +1,5 @@
 package com.blubank.doctorappointment.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
 @EqualsAndHashCode
 public class PatientDTO {
 
-    @JsonIgnore
     private Long id;
 
     private String name;
