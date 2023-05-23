@@ -91,7 +91,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         return dto.getStartTime().isBefore(dto.getEndTime());
     }
 
-    public boolean isAvailable(AppointmentSlot appointmentSlot) {
+    private boolean isAvailable(AppointmentSlot appointmentSlot) {
         return Boolean.TRUE.equals(appointmentSlot.getIsAvailable());
     }
 }
