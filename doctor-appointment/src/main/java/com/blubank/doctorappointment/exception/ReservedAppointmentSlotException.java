@@ -3,7 +3,8 @@ package com.blubank.doctorappointment.exception;
 import org.springframework.http.HttpStatus;
 
 public class ReservedAppointmentSlotException extends CustomException{
+    private static final String DESC = "blubank.appointment.slot.exception";
     public ReservedAppointmentSlotException() {
-        super("this appointment is taken", HttpStatus.NOT_ACCEPTABLE);
+        super(DESC, HttpStatus.NOT_ACCEPTABLE);
     }
 }
