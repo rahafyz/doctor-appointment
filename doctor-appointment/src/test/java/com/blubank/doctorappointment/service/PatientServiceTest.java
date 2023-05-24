@@ -1,6 +1,8 @@
 package com.blubank.doctorappointment.service;
 
 import com.blubank.doctorappointment.exception.CustomException;
+import com.blubank.doctorappointment.exception.DuplicatePatientException;
+import com.blubank.doctorappointment.exception.PatientNotFoundException;
 import com.blubank.doctorappointment.mapper.PatientMapper;
 import com.blubank.doctorappointment.repository.PatientRepository;
 import com.blubank.doctorappointment.service.impl.PatientServiceImpl;
@@ -11,15 +13,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
-import static com.blubank.doctorappointment.util.AppointmentSlotData.*;
 import static com.blubank.doctorappointment.util.PatientData.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PatientServiceTest {
+class PatientServiceTest {
 
     @Mock
     private PatientRepository repository;
@@ -46,8 +46,7 @@ public class PatientServiceTest {
 
     @Test
     void getAppointments_shouldReturnAppointmentDTOList() {
-//        when(repository.findByPhoneNumber(PHONE_NUMBER)).thenReturn(Optional.ofNullable(patient()));
-        doNothing().when(repository.findByPhoneNumber(PHONE_NUMBER)).isPresent();
+        when(repository.findByPhoneNumber(PHONE_NUMBER)).thenReturn(Optional.ofNullable(patient()));
         when(mapper.toDTO(patient())).thenReturn(patientDTO());
 
         Assertions.assertEquals(patientDTO().getAppointmentList(), service.getAppointments(PHONE_NUMBER));
@@ -61,16 +60,14 @@ public class PatientServiceTest {
     void getAppointments_whenPatientNotFound_shouldThrowException() {
         when(repository.findByPhoneNumber(PHONE_NUMBER)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CustomException.class, () -> service.getAppointments(PHONE_NUMBER));
+        Assertions.assertThrows(PatientNotFoundException.class, () -> service.getAppointments(PHONE_NUMBER));
     }
 
     @Test
     void create_whenPatientExist_shouldThrowException(){
-        when(repository.findByPhoneNumber(createPatientDTO().getPhoneNumber())).thenReturn(Optional.ofNullable(any()));
+        when(repository.findByPhoneNumber(createPatientDTO().getPhoneNumber())).thenReturn(Optional.ofNullable(patient()));
 
-        Assertions.assertThrows(CustomException.class, () -> {
-            service.create(createPatientDTO());
-        });
+        Assertions.assertThrows(DuplicatePatientException.class, () -> service.create(createPatientDTO()));
 
     }
 
@@ -87,8 +84,6 @@ public class PatientServiceTest {
     void update_whenPatientNotExist_shouldThrowException(){
         when(repository.findById(ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CustomException.class, () -> {
-            service.update(ID,patientDTO());
-        });
+        Assertions.assertThrows(CustomException.class, () -> service.update(ID,patientDTO()));
     }
 }
