@@ -22,6 +22,7 @@ import java.util.Date;
 public class Doctor {
 
     @Id
+    @Column(name = "doctor_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -38,13 +39,5 @@ public class Doctor {
     @Column(name = "created_by")
     @CreatedBy
     private String createdBy;
-
-    @Column(name = "modified_date")
-    @LastModifiedDate
-    private Date modifiedDate;
-
-    @Column(name = "modified_by")
-    @LastModifiedBy
-    private String modifiedBy;
 
 }
