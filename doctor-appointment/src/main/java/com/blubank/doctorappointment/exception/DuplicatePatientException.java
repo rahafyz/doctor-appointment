@@ -3,7 +3,8 @@ package com.blubank.doctorappointment.exception;
 import org.springframework.http.HttpStatus;
 
 public class DuplicatePatientException extends CustomException{
+    private final static String desc = "blubank.patient.duplicate.exception";
     public DuplicatePatientException() {
-        super("there is a patient by this phone number",HttpStatus.NOT_ACCEPTABLE);
+        super(desc,HttpStatus.NOT_ACCEPTABLE);
     }
 }
