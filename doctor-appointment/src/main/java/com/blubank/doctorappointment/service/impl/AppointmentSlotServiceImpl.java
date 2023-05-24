@@ -68,12 +68,11 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     @Override
     @Transactional
     public void delete(Long id) {
-        boolean canGetLock = lockUtil.getLockForAppointmentSlot(id)
-                ;
+        boolean canGetLock = lockUtil.getLockForAppointmentSlot(id);
         try {
             if (canGetLock) {
-                AppointmentSlot appointmentSlot = getById(id)
-                        ;
+                AppointmentSlot appointmentSlot = getById(id);
+
                 if (!isAvailable.test(appointmentSlot))
                     throw new ReservedAppointmentSlotException();
                 repository.deleteById(id)
