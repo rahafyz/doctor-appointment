@@ -61,9 +61,7 @@ public class PatientServiceTest {
     void getAppointments_whenPatientNotFound_shouldThrowException() {
         when(repository.findByPhoneNumber(PHONE_NUMBER)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CustomException.class, () -> {
-            service.getAppointments(PHONE_NUMBER);
-        });
+        Assertions.assertThrows(CustomException.class, () -> service.getAppointments(PHONE_NUMBER));
     }
 
     @Test

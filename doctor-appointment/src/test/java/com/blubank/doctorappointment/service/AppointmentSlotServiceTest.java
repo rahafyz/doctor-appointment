@@ -8,6 +8,7 @@ import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.impl.AppointmentSlotServiceImpl;
+import com.blubank.doctorappointment.util.LockUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ class AppointmentSlotServiceTest {
     @Mock
     private AppointmentSlotMapper mapper;
 
+    @Mock
+    private LockUtil lockUtil;
+
     private AppointmentSlotService service;
     private static final Long ID = 1L;
 
@@ -42,7 +46,7 @@ class AppointmentSlotServiceTest {
 
     @BeforeEach
     void init() {
-        service = new AppointmentSlotServiceImpl(repository, mapper);
+        service = new AppointmentSlotServiceImpl(repository,lockUtil, mapper);
         ReflectionTestUtils.setField(service, "timeInterval", 30);
     }
 

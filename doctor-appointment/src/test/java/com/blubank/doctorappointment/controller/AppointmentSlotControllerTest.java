@@ -6,7 +6,10 @@ import com.blubank.doctorappointment.exception.GlobalExceptionHandling;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
+import com.blubank.doctorappointment.util.LockUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.blubank.doctorappointment.util.AppointmentSlotData.createAppointmentSlotDTO;
@@ -46,6 +50,9 @@ class AppointmentSlotControllerTest {
     @Autowired
     GlobalExceptionHandling exceptionHandler;
 
+    @Autowired
+    private LockUtil lockUtil;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -56,7 +63,8 @@ class AppointmentSlotControllerTest {
                 .setMessageConverters(jacksonMessageConverter)
                 .setControllerAdvice(exceptionHandler)
                 .build();
-        objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Test
@@ -65,7 +73,9 @@ class AppointmentSlotControllerTest {
 
         mockMvc.perform(post("/api/v1/appointment-slot")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(createAppointmentSlotDTO)))
+                        .content(objectMapper.writeValueAsString(createAppointmentSlotDTO))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].startTime").value(createAppointmentSlotDTO.getStartTime().toString()))
