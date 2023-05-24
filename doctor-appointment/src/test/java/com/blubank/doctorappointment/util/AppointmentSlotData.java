@@ -39,8 +39,10 @@ public class AppointmentSlotData {
 
     public static AppointmentSlotDTO appointmentSlotDTO(){
         return AppointmentSlotDTO.builder()
+                .id(1L)
                 .startTime(START_TIME)
                 .endTime(END_TIME)
+                .isAvailable(true)
                 .build();
     }
     public static List<AppointmentSlotDTO> appointmentSlotDTOList(){

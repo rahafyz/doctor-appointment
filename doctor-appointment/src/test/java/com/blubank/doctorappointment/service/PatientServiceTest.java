@@ -1,9 +1,11 @@
 package com.blubank.doctorappointment.service;
 
+import com.blubank.doctorappointment.dto.PatientDTO;
 import com.blubank.doctorappointment.exception.CustomException;
 import com.blubank.doctorappointment.exception.DuplicatePatientException;
 import com.blubank.doctorappointment.exception.PatientNotFoundException;
 import com.blubank.doctorappointment.mapper.PatientMapper;
+import com.blubank.doctorappointment.mapper.PatientMapperImpl;
 import com.blubank.doctorappointment.repository.PatientRepository;
 import com.blubank.doctorappointment.service.impl.PatientServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -11,8 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.blubank.doctorappointment.util.PatientData.*;
@@ -24,8 +28,8 @@ class PatientServiceTest {
     @Mock
     private PatientRepository repository;
 
-    @Mock
-    private PatientMapper mapper;
+    @Spy
+    private PatientMapperImpl mapper;
 
     private PatientService service;
 
@@ -47,13 +51,14 @@ class PatientServiceTest {
     @Test
     void getAppointments_shouldReturnAppointmentDTOList() {
         when(repository.findByPhoneNumber(PHONE_NUMBER)).thenReturn(Optional.ofNullable(patient()));
-        when(mapper.toDTO(patient())).thenReturn(patientDTO());
 
-        Assertions.assertEquals(patientDTO().getAppointmentList(), service.getAppointments(PHONE_NUMBER));
+        List<PatientDTO.AppointmentDTO> appointments = service.getAppointments(PHONE_NUMBER);
 
-        Assertions.assertArrayEquals(patientDTO().getAppointmentList().toArray(), service.getAppointments(PHONE_NUMBER).toArray());
+        Assertions.assertEquals(patientDTO().getAppointmentList(), appointments);
 
-        Assertions.assertEquals(patientDTO().getAppointmentList().size(), service.getAppointments(PHONE_NUMBER).size());
+        Assertions.assertArrayEquals(patientDTO().getAppointmentList().toArray(), appointments.toArray());
+
+        Assertions.assertEquals(patientDTO().getAppointmentList().size(), appointments.size());
     }
 
     @Test
@@ -73,7 +78,7 @@ class PatientServiceTest {
 
     @Test
     void create_shouldReturnPatientDTO(){
-        when(mapper.toDTO(repository.save(mapper.toEntity(createPatientDTO())))).thenReturn(patientDTO());
+        when(repository.save(patient())).thenReturn(patient());
 
         Assertions.assertEquals(patientDTO(), service.create(createPatientDTO()));
         Assertions.assertNotNull(patientDTO().getId());
