@@ -21,12 +21,13 @@ public class AppointmentController {
     private final AppointmentFacadeService appointmentFacadeService;
 
     @GetMapping
-    public ResponseEntity<List<AppointmentDTO>> findAll(Pageable pageable){
+    public ResponseEntity<List<AppointmentDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(appointmentService.findAll(pageable));
     }
 
     @PostMapping
-    public ResponseEntity<AppointmentDTO> reserve(@RequestBody @Valid ReserveAppointmentDTO reserveAppointmentDTO){
-        return ResponseEntity.ok(appointmentFacadeService.reserveAppointment(reserveAppointmentDTO));
+    public ResponseEntity<Void> reserve(@RequestBody @Valid ReserveAppointmentDTO reserveAppointmentDTO) {
+        appointmentFacadeService.reserveAppointment(reserveAppointmentDTO);
+        return ResponseEntity.ok().build();
     }
 }

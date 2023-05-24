@@ -35,11 +35,11 @@ public class LockUtil {
         this.redissonClient.getLock(name).unlock();
     }
 
-    public boolean getLockForAppointmentSlot(Long timeSlotId) {
-        return this.lock(String.format(APPOINTMENT_SLOT_LOCK_PREFIX, timeSlotId));
+    public boolean getLockForAppointmentSlot(Long appointmentTimeSlotID) {
+        return this.lock(String.format(APPOINTMENT_SLOT_LOCK_PREFIX, appointmentTimeSlotID));
     }
-    public void releaseLockForAppointmentSlotTimeSlot(Long timeSlotId) {
-        this.releaseLock(String.format(APPOINTMENT_SLOT_LOCK_PREFIX, timeSlotId));
+    public void releaseLockForAppointmentSlotTimeSlot(Long appointmentTimeSlotID) {
+        this.releaseLock(String.format(APPOINTMENT_SLOT_LOCK_PREFIX, appointmentTimeSlotID));
     }
 
 }

@@ -3,13 +3,16 @@ package com.blubank.doctorappointment.service.impl;
 import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
 import com.blubank.doctorappointment.dto.CreateAppointmentSlotDTO;
 import com.blubank.doctorappointment.exception.AppointmentSlotNotFoundException;
+import com.blubank.doctorappointment.exception.ConcurrentRequestException;
 import com.blubank.doctorappointment.exception.InvalidTimeException;
 import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
+import com.blubank.doctorappointment.util.LockUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,15 +30,16 @@ import java.util.function.Predicate;
 public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     private final AppointmentSlotRepository repository;
-
+    private final LockUtil lockUtil;
     private final AppointmentSlotMapper mapper;
+
     private final Predicate<CreateAppointmentSlotDTO> isTimeValid = createAppointmentSlotDTO ->
             createAppointmentSlotDTO.getStartTime().isBefore(createAppointmentSlotDTO.getEndTime());
 
     private final Predicate<AppointmentSlot> isAvailable = appointmentSlot -> Boolean.TRUE.equals(appointmentSlot.getIsAvailable());
 
-    //    @Value("${doctor.appointment.time.interval}")
-    private int timeInterval = 30;
+    @Value("${doctor.appointment.time.interval}")
+    private Integer timeInterval = 30;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,16 +62,30 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     @Override
     @Transactional(readOnly = true)
     public List<AppointmentSlotDTO> getOpenAppointments(Long doctorId, Pageable pageable) {
-        return mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(doctorId,pageable));
+        return mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(doctorId, pageable));
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        AppointmentSlot appointmentSlot = getById(id);
-        if (!isAvailable.test(appointmentSlot))
-            throw new ReservedAppointmentSlotException();
-        repository.deleteById(id);
+        boolean canGetLock = lockUtil.getLockForAppointmentSlot(id)
+                ;
+        try {
+            if (canGetLock) {
+                AppointmentSlot appointmentSlot = getById(id)
+                        ;
+                if (!isAvailable.test(appointmentSlot))
+                    throw new ReservedAppointmentSlotException();
+                repository.deleteById(id)
+                ;
+            } else {
+                throw new ConcurrentRequestException();
+            }
+        } finally {
+            lockUtil.releaseLockForAppointmentSlotTimeSlot(id)
+            ;
+        }
+
     }
 
     @Override
@@ -75,7 +93,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     public List<AppointmentSlotDTO> getByDate(LocalDate date, Pageable pageable) {
         LocalDateTime startTime = date.atStartOfDay();
         LocalDateTime endTime = date.atTime(23, 59);
-        List<AppointmentSlot> appointmentSlots = repository.findByIsAvailableAndStartTimeBetween(true,startTime, endTime,pageable);
+        List<AppointmentSlot> appointmentSlots = repository.findByIsAvailableAndStartTimeBetween(true, startTime, endTime, pageable);
         return mapper.toDTOList(appointmentSlots);
     }
 
