@@ -47,6 +47,10 @@ public class AppointmentSlotData {
         return List.of(appointmentSlotDTO());
     }
 
+    public static List<AppointmentSlot> appointmentSlotList(){
+        return List.of(appointmentSlot());
+    }
+
     public static CreateAppointmentSlotDTO createAppointmentSlotDTO(){
         return CreateAppointmentSlotDTO.builder()
                 .startTime(CREATE_START_TIME)

@@ -32,8 +32,7 @@ public class Patient implements Serializable {
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "appointment_list")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "patient")
     private List<Appointment> appointmentList;
 
     @Column(name = "created_date")

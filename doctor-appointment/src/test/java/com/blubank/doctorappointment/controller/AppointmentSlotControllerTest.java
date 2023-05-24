@@ -4,7 +4,6 @@ package com.blubank.doctorappointment.controller;
 import com.blubank.doctorappointment.dto.CreateAppointmentSlotDTO;
 import com.blubank.doctorappointment.exception.GlobalExceptionHandling;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
-import com.blubank.doctorappointment.model.Doctor;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.repository.DoctorRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
@@ -20,7 +19,6 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -30,11 +28,8 @@ import java.time.format.DateTimeFormatter;
 import static com.blubank.doctorappointment.util.AppointmentSlotData.appointmentSlot;
 import static com.blubank.doctorappointment.util.AppointmentSlotData.createAppointmentSlotDTO;
 import static com.blubank.doctorappointment.util.DoctorData.doctor;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
