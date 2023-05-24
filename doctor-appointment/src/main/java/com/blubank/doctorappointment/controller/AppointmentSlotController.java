@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +21,8 @@ public class AppointmentSlotController {
 
     private final AppointmentSlotService appointmentSlotService;
 
-    @PostMapping(value = "",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid CreateAppointmentSlotDTO timeDTO) {
+    @PostMapping(value = "/{doctorId}")
+    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid CreateAppointmentSlotDTO timeDTO,PathVariable doctorId) {
         return ResponseEntity.ok(appointmentSlotService.save(timeDTO));
     }
 

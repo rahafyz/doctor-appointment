@@ -8,8 +8,10 @@ import com.blubank.doctorappointment.exception.InvalidTimeException;
 import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
+import com.blubank.doctorappointment.model.Doctor;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
+import com.blubank.doctorappointment.service.DoctorService;
 import com.blubank.doctorappointment.util.LockUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     private final AppointmentSlotRepository repository;
     private final LockUtil lockUtil;
     private final AppointmentSlotMapper mapper;
+    private final DoctorService doctorService;
 
     private final Predicate<CreateAppointmentSlotDTO> isTimeValid = createAppointmentSlotDTO ->
             createAppointmentSlotDTO.getStartTime().isBefore(createAppointmentSlotDTO.getEndTime());
@@ -98,6 +101,8 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
 
     private List<AppointmentSlot> setTimeInterval(CreateAppointmentSlotDTO dto) {
+        Doctor doctor = getDoctor(dto.getDoctorId());
+
         List<AppointmentSlot> timeSlots = new ArrayList<>();
 
         long numSlots = Duration.between(dto.getStartTime(), dto.getEndTime()).toMinutes() / timeInterval;
@@ -110,10 +115,15 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             AppointmentSlot slot = AppointmentSlot.builder()
                     .startTime(slotTime)
                     .endTime(slotTime.plusMinutes(30))
+                    .doctor(doctor)
                     .isAvailable(true).build();
             timeSlots.add(slot);
             slotTime = slotTime.plusMinutes(30);
         }
         return timeSlots;
+    }
+
+    private Doctor getDoctor(Long doctorId) {
+        return doctorService.getById(doctorId);
     }
 }
