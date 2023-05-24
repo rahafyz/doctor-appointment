@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public List<PatientDTO.AppointmentDTO> getAppointments(String phoneNumber) {
         Patient patient = this.get(phoneNumber).orElseThrow(
                 PatientNotFoundException::new
@@ -44,6 +46,7 @@ public class PatientServiceImpl implements PatientService {
         if (get(patientDTO.getPhoneNumber()).isPresent())
             throw new DuplicatePatientException();
         Patient patient = mapper.toEntity(patientDTO);
+        patient.setAppointmentList(new ArrayList<>());
         return mapper.toDTO(repository.save(patient));
     }
 

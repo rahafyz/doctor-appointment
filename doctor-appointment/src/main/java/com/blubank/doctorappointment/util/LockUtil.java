@@ -1,6 +1,7 @@
 package com.blubank.doctorappointment.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
@@ -17,29 +18,39 @@ public class LockUtil {
         this.redissonClient = redissonClient;
     }
 
-    private boolean lock(String name, long waitTimeMilliseconds, long leasTimeMilliseconds) {
+
+    private RLock lock(String name, long waitTimeMilliseconds, long leasTimeMilliseconds){
         try {
-            return this.redissonClient.getLock(name).tryLock(waitTimeMilliseconds, leasTimeMilliseconds, TimeUnit.MILLISECONDS);
+            this.redissonClient.getLock(name).tryLock(waitTimeMilliseconds,leasTimeMilliseconds, TimeUnit.MILLISECONDS);
+            return this.redissonClient.getLock(name);
         } catch (InterruptedException ignore) {
             log.error("Exception in acquiring redisson lock {}", name);
             Thread.currentThread().interrupt();
-            return false;
+            return null;
         }
     }
 
-    private boolean lock(String name) {
+    private RLock lock(String name) {
         return this.lock(name, 0, 1000);
     }
 
-    private void releaseLock(String name) {
-        this.redissonClient.getLock(name).unlock();
+    public void releaseLock(RLock lock) {
+        lock.unlock();
     }
 
-    public boolean getLockForAppointmentSlot(Long appointmentTimeSlotID) {
-        return this.lock(String.format(APPOINTMENT_SLOT_LOCK_PREFIX, appointmentTimeSlotID));
+    public RLock getLockForAppointmentSlot(Long appointmentTimeSlotID) {
+        String lockName = String.format(APPOINTMENT_SLOT_LOCK_PREFIX, appointmentTimeSlotID);
+        RLock lock = lock(lockName);
+        log.info("Lock acquired for lockName={} by thread={}", lockName, Thread.currentThread().getName());
+        return lock;
     }
     public void releaseLockForAppointmentSlotTimeSlot(Long appointmentTimeSlotID) {
-        this.releaseLock(String.format(APPOINTMENT_SLOT_LOCK_PREFIX, appointmentTimeSlotID));
+        String lockName = String.format(APPOINTMENT_SLOT_LOCK_PREFIX, appointmentTimeSlotID);
+        RLock lock = redissonClient.getLock(lockName);
+        if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+            releaseLock(lock);
+            log.info("Lock released for lockName={} by thread={}", lockName, Thread.currentThread().getName());
+        }
     }
 
 }

@@ -13,6 +13,7 @@ import com.blubank.doctorappointment.service.AppointmentSlotService;
 import com.blubank.doctorappointment.service.PatientService;
 import com.blubank.doctorappointment.util.LockUtil;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +33,8 @@ public class AppointmentFacadeServiceImpl implements AppointmentFacadeService {
     @Override
     @Transactional
     public void reserveAppointment(ReserveAppointmentDTO reserveDTO) {
-        boolean canGetLock = lockUtil.getLockForAppointmentSlot(reserveDTO.getAppointmentSlotId());
-        if (canGetLock) {
+        RLock lock = lockUtil.getLockForAppointmentSlot(reserveDTO.getAppointmentSlotId());
+        if (lock != null) {
             try {
                 PatientDTO patientDTO = createPatient(reserveDTO.getPatientDTO());
 
