@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -18,7 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class AppointmentSlot {
+public class AppointmentSlot implements Serializable {
 
     @Id
     @Column(name = "appointment_slot_id")

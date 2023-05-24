@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -19,7 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode
-public class Doctor {
+public class Doctor implements Serializable {
 
     @Id
     @Column(name = "doctor_id")

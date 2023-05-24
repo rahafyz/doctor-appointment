@@ -3,11 +3,10 @@ package com.blubank.doctorappointment.model;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode
-public class Patient {
+public class Patient implements Serializable {
 
     @Id
     @Column(name = "patient_id")
@@ -30,10 +29,10 @@ public class Patient {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "phone_number",nullable = false,unique = true)
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "appointment_list")
     private List<Appointment> appointmentList;
 
