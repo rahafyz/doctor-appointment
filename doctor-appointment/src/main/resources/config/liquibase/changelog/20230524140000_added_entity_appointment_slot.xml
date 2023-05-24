@@ -11,7 +11,7 @@
             </not>
         </preConditions>
         <createTable tableName="appointment_slot">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="appointment_slot_id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="start_time" type="DATETIME">
@@ -30,19 +30,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="modified_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="modified_by" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="doctor_id"
                                  baseTableName="appointment_slot"
                                  constraintName="fk_doctor_id"
-                                 referencedColumnNames="id"
+                                 referencedColumnNames="doctor_id"
                                  referencedTableName="doctor"/>
 
     </changeSet>

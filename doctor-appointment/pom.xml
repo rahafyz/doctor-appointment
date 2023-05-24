@@ -15,7 +15,7 @@
 	<description>Demo project for blu Bank</description>
 	<properties>
 		<java.version>11</java.version>
-		<liquibase.version>4.2.2</liquibase.version>
+		<liquibase.version>4.3.5</liquibase.version>
 		<liquibase-hibernate5.version>3.6</liquibase-hibernate5.version>
 	</properties>
 	<dependencies>
