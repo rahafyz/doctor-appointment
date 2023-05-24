@@ -42,12 +42,10 @@ public class AppointmentFacadeServiceImpl implements AppointmentFacadeService {
 
                 appointmentSlotDTO.setIsAvailable(false);
 
-                AppointmentDTO appointmentDTO = appointmentService.create(CreateAppointmentDTO.builder()
+                appointmentService.create(CreateAppointmentDTO.builder()
                         .appointmentSlot(appointmentSlotDTO)
                         .patient(patientDTO).build());
 
-                patientDTO.getAppointmentList().add(PatientDTO.AppointmentDTO.builder()
-                        .appointmentSlot(appointmentDTO.getAppointmentSlot()).build());
             } finally {
                 lockUtil.releaseLockForAppointmentSlotTimeSlot(reserveDTO.getAppointmentSlotId());
             }

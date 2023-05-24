@@ -8,15 +8,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
 
-import static com.blubank.doctorappointment.util.AppointmentData.appointmentDTO;
-import static org.mockito.Mockito.when;
+import static com.blubank.doctorappointment.util.AppointmentData.*;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +27,7 @@ class AppointmentServiceTest {
     @Mock
     private AppointmentRepository repository;
 
-    @Mock
+    @Spy
     private AppointmentMapper mapper;
 
     private AppointmentService service;
@@ -39,7 +41,8 @@ class AppointmentServiceTest {
 
     @Test
     void findAll_shouldReturnAppointmentDTOList(){
-        when(mapper.toDTOList(repository.findAll(pageable).getContent())).thenReturn(List.of(appointmentDTO()));
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(appointmentList()));
+        when(mapper.toDTOList(appointmentList())).thenReturn(appointmentDTOList());
 
         Assertions.assertEquals(List.of(appointmentDTO()),service.findAll(pageable));
 
@@ -50,8 +53,23 @@ class AppointmentServiceTest {
 
     @Test
     void findAll_whenNoAppointment_shouldReturnEmptyList(){
-        when(mapper.toDTOList(repository.findAll())).thenReturn(Collections.emptyList());
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         Assertions.assertEquals(Collections.EMPTY_LIST, service.findAll(pageable));
+    }
+
+    @Test
+    void save_shouldReturnAppointmentDTO(){
+
+        when(mapper.toEntity(createAppointmentDTO())).thenReturn(appointment());
+
+        when(repository.save(appointment())).thenReturn(appointment());
+
+        when(mapper.toDTO(appointment())).thenReturn(appointmentDTO());
+
+        Assertions.assertEquals(appointmentDTO(),service.create(createAppointmentDTO()));
+
+        verify(repository).save(appointment());
+
     }
 }

@@ -86,8 +86,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                 throw new ConcurrentRequestException();
             }
         } finally {
-            lockUtil.releaseLockForAppointmentSlotTimeSlot(id)
-            ;
+            lockUtil.releaseLockForAppointmentSlotTimeSlot(id);
         }
 
     }

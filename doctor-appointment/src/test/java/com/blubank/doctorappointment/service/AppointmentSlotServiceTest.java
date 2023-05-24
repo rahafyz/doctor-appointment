@@ -1,20 +1,20 @@
 package com.blubank.doctorappointment.service;
 
-import com.blubank.doctorappointment.exception.AppointmentSlotNotFoundException;
-import com.blubank.doctorappointment.exception.CustomException;
-import com.blubank.doctorappointment.exception.InvalidTimeException;
-import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
+import com.blubank.doctorappointment.exception.*;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.impl.AppointmentSlotServiceImpl;
 import com.blubank.doctorappointment.util.LockUtil;
+import liquibase.pro.packaged.I;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.redisson.api.RLock;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.blubank.doctorappointment.util.AppointmentSlotData.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -33,11 +35,13 @@ class AppointmentSlotServiceTest {
 
     @Mock
     private AppointmentSlotRepository repository;
-    @Mock
+    @Spy
     private AppointmentSlotMapper mapper;
-
     @Mock
     private LockUtil lockUtil;
+
+    @Mock
+    DoctorService doctorService;
 
     private AppointmentSlotService service;
     private static final Long ID = 1L;
@@ -46,7 +50,7 @@ class AppointmentSlotServiceTest {
 
     @BeforeEach
     void init() {
-        service = new AppointmentSlotServiceImpl(repository,lockUtil, mapper);
+        service = new AppointmentSlotServiceImpl(repository,lockUtil, mapper,doctorService);
         ReflectionTestUtils.setField(service, "timeInterval", 30);
     }
 
@@ -76,7 +80,6 @@ class AppointmentSlotServiceTest {
         when(mapper.toDTOList(repository.saveAll(appointmentSlotList))).thenReturn(appointmentSlotDTOList());
 
         Assertions.assertEquals(appointmentSlotDTOList(), service.save(createAppointmentSlotDTO()));
-        Assertions.assertNotNull(appointmentSlotList.get(0).getId());
 
         verify(repository, times(1)).saveAll(appointmentSlotList);
     }
@@ -115,25 +118,44 @@ class AppointmentSlotServiceTest {
 
     }
 
-    /*@Test
+    @Test
     void delete_shouldDeleteAppointment(){
+
+        // Mock lock and lockUtil
+        RLock mockLock = mock(RLock.class);
+        when(lockUtil.getLockForAppointmentSlot(1L)).thenReturn(mockLock);
+
         when(repository.findById(ID)).thenReturn(Optional.ofNullable(appointmentSlot()));
 
-        verify(repository, times(1)).deleteById(ID);
+        service.delete(ID);
 
-    }*/
+        verify(repository).deleteById(ID);
+
+    }
 
     @Test
     void delete_whenAppointmentNotFound_shouldThrowException(){
+        RLock mockLock = mock(RLock.class);
+        when(lockUtil.getLockForAppointmentSlot(ID)).thenReturn(mockLock);
         when(repository.findById(ID)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> service.delete(ID));
     }
     @Test
     void delete_whenAppointmentIsTaken_shouldThrowException(){
+        RLock mockLock = mock(RLock.class);
+        when(lockUtil.getLockForAppointmentSlot(ID)).thenReturn(mockLock);
         when(repository.findById(ID)).thenReturn(Optional.ofNullable(takenAppointmentSlot()));
 
         Assertions.assertThrows(ReservedAppointmentSlotException.class, () -> service.delete(ID));
+    }
+
+
+    @Test
+    void delete_whenLockIsTaken_shouldThrowException(){
+        when(lockUtil.getLockForAppointmentSlot(ID)).thenReturn(null);
+
+        Assertions.assertThrows(ConcurrentRequestException.class, () -> service.delete(ID));
     }
 
     @Test

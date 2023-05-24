@@ -46,7 +46,6 @@ public class PatientServiceImpl implements PatientService {
         if (get(patientDTO.getPhoneNumber()).isPresent())
             throw new DuplicatePatientException();
         Patient patient = mapper.toEntity(patientDTO);
-        patient.setAppointmentList(new ArrayList<>());
         return mapper.toDTO(repository.save(patient));
     }
 
