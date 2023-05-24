@@ -21,8 +21,8 @@ public class AppointmentSlotController {
 
     private final AppointmentSlotService appointmentSlotService;
 
-    @PostMapping(value = "/{doctorId}")
-    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid CreateAppointmentSlotDTO timeDTO,PathVariable doctorId) {
+    @PostMapping(value = "")
+    public ResponseEntity<List<AppointmentSlotDTO>> save(@RequestBody @Valid CreateAppointmentSlotDTO timeDTO) {
         return ResponseEntity.ok(appointmentSlotService.save(timeDTO));
     }
 

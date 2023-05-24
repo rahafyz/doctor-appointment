@@ -14,6 +14,7 @@ import com.blubank.doctorappointment.service.AppointmentSlotService;
 import com.blubank.doctorappointment.service.DoctorService;
 import com.blubank.doctorappointment.util.LockUtil;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 @Service
@@ -71,9 +73,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     @Override
     @Transactional
     public void delete(Long id) {
-        boolean canGetLock = lockUtil.getLockForAppointmentSlot(id);
+        RLock lock = lockUtil.getLockForAppointmentSlot(id);
         try {
-            if (canGetLock) {
+            if (Objects.nonNull(lock)) {
                 AppointmentSlot appointmentSlot = getById(id);
 
                 if (!isAvailable.test(appointmentSlot))
