@@ -1,7 +1,6 @@
 package com.blubank.doctorappointment.service;
 
 import com.blubank.doctorappointment.dto.AppointmentDTO;
-import com.blubank.doctorappointment.mapper.AppointmentMapper;
 import com.blubank.doctorappointment.mapper.AppointmentMapperImpl;
 import com.blubank.doctorappointment.repository.AppointmentRepository;
 import com.blubank.doctorappointment.service.impl.AppointmentServiceImpl;
@@ -20,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.blubank.doctorappointment.util.AppointmentData.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +41,7 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void findAll_shouldReturnAppointmentDTOList(){
+    void findAll_shouldReturnAppointmentDTOList() {
         when(repository.findAll(pageable)).thenReturn(new PageImpl<>(appointmentList()));
 
         List<AppointmentDTO> appointmentDTOS = service.findAll(pageable);
@@ -55,18 +54,18 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void findAll_whenNoAppointment_shouldReturnEmptyList(){
+    void findAll_whenNoAppointment_shouldReturnEmptyList() {
         when(repository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         Assertions.assertEquals(Collections.EMPTY_LIST, service.findAll(pageable));
     }
 
     @Test
-    void save_shouldReturnAppointmentDTO(){
+    void save_shouldReturnAppointmentDTO() {
 
         when(repository.save(appointmentWithoutId())).thenReturn(appointment());
 
-        Assertions.assertEquals(appointmentDTO(),service.create(createAppointmentDTO()));
+        Assertions.assertEquals(appointmentDTO(), service.create(createAppointmentDTO()));
 
     }
 }

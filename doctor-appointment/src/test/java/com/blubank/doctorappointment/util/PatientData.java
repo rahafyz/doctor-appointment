@@ -13,7 +13,7 @@ public class PatientData {
     public static final String NAME = "name";
     public static final String PHONE_NUMBER = "09121234567";
 
-    public static Patient patient(){
+    public static Patient patient() {
         return Patient.builder()
                 .id(1L)
                 .name(NAME)
@@ -21,7 +21,7 @@ public class PatientData {
                 .appointmentList(List.of(appointment())).build();
     }
 
-    public static PatientDTO patientDTO(){
+    public static PatientDTO patientDTO() {
         return PatientDTO.builder()
                 .id(1L)
                 .name(NAME)
@@ -29,28 +29,30 @@ public class PatientData {
                 .appointmentList(List.of(PatientDTO.AppointmentDTO.builder().appointmentSlot(appointmentSlotDTO()).build())).build();
     }
 
-    public static PatientDTO patientDTOCreated(){
+    public static PatientDTO patientDTOCreated() {
         return PatientDTO.builder()
                 .id(1L)
                 .name(NAME)
                 .phoneNumber(PHONE_NUMBER)
                 .build();
     }
-    public static Patient patientCreated(){
+
+    public static Patient patientCreated() {
         return Patient.builder()
                 .id(1L)
                 .name(NAME)
                 .phoneNumber(PHONE_NUMBER)
                 .build();
     }
-    public static Patient patientCreatedWithoutId(){
+
+    public static Patient patientCreatedWithoutId() {
         return Patient.builder()
                 .name(NAME)
                 .phoneNumber(PHONE_NUMBER)
                 .build();
     }
 
-    public static CreatePatientDTO createPatientDTO(){
+    public static CreatePatientDTO createPatientDTO() {
         return CreatePatientDTO.builder()
                 .name(NAME)
                 .phoneNumber(PHONE_NUMBER)

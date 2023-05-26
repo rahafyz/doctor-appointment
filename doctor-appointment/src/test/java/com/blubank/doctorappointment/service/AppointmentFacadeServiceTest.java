@@ -52,12 +52,12 @@ public class AppointmentFacadeServiceTest {
 
     @BeforeEach
     void init() {
-        facadeService = new AppointmentFacadeServiceImpl(patientService,patientMapper,
-                appointmentSlotService,appointmentSlotMapper,appointmentService,lockUtil);
+        facadeService = new AppointmentFacadeServiceImpl(patientService, patientMapper,
+                appointmentSlotService, appointmentSlotMapper, appointmentService, lockUtil);
     }
 
     @Test
-    void reserve(){
+    void reserve() {
         AppointmentSlotDTO appointmentSlotDTO = appointmentSlotDTO();
         CreateAppointmentDTO createAppointmentDTO = createAppointmentDTO();
         AppointmentDTO appointmentDTO = appointmentDTO();
@@ -85,14 +85,14 @@ public class AppointmentFacadeServiceTest {
     }
 
     @Test
-    void reserve_whenLockIsTaken_shouldThrowException(){
+    void reserve_whenLockIsTaken_shouldThrowException() {
         when(lockUtil.getLockForAppointmentSlot(1L)).thenReturn(null);
 
         Assertions.assertThrows(ConcurrentRequestException.class, () -> facadeService.reserveAppointment(reserveAppointmentDTO()));
     }
 
     @Test
-    void reserve_whenAppointmentIsTaken_shouldThrowException(){
+    void reserve_whenAppointmentIsTaken_shouldThrowException() {
         RLock mockLock = mock(RLock.class);
         when(lockUtil.getLockForAppointmentSlot(1L)).thenReturn(mockLock);
 

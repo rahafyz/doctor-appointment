@@ -4,7 +4,6 @@ import com.blubank.doctorappointment.dto.PatientDTO;
 import com.blubank.doctorappointment.exception.CustomException;
 import com.blubank.doctorappointment.exception.DuplicatePatientException;
 import com.blubank.doctorappointment.exception.PatientNotFoundException;
-import com.blubank.doctorappointment.mapper.PatientMapper;
 import com.blubank.doctorappointment.mapper.PatientMapperImpl;
 import com.blubank.doctorappointment.repository.PatientRepository;
 import com.blubank.doctorappointment.service.impl.PatientServiceImpl;
@@ -69,7 +68,7 @@ class PatientServiceTest {
     }
 
     @Test
-    void create_whenPatientExist_shouldThrowException(){
+    void create_whenPatientExist_shouldThrowException() {
         when(repository.findByPhoneNumber(createPatientDTO().getPhoneNumber())).thenReturn(Optional.ofNullable(patient()));
 
         Assertions.assertThrows(DuplicatePatientException.class, () -> service.create(createPatientDTO()));
@@ -77,7 +76,7 @@ class PatientServiceTest {
     }
 
     @Test
-    void create_shouldReturnPatientDTO(){
+    void create_shouldReturnPatientDTO() {
         when(repository.save(patientCreatedWithoutId())).thenReturn(patientCreated());
 
         Assertions.assertEquals(patientDTOCreated(), service.create(createPatientDTO()));
@@ -85,9 +84,9 @@ class PatientServiceTest {
     }
 
     @Test
-    void update_whenPatientNotExist_shouldThrowException(){
+    void update_whenPatientNotExist_shouldThrowException() {
         when(repository.findById(ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(CustomException.class, () -> service.update(ID,patientDTO()));
+        Assertions.assertThrows(CustomException.class, () -> service.update(ID, patientDTO()));
     }
 }
