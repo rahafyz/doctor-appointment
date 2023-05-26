@@ -78,10 +78,9 @@ class PatientServiceTest {
 
     @Test
     void create_shouldReturnPatientDTO(){
-        when(repository.save(patient())).thenReturn(patient());
+        when(repository.save(patientCreatedWithoutId())).thenReturn(patientCreated());
 
-        Assertions.assertEquals(patientDTO(), service.create(createPatientDTO()));
-        Assertions.assertNotNull(patientDTO().getId());
+        Assertions.assertEquals(patientDTOCreated(), service.create(createPatientDTO()));
 
     }
 

@@ -5,8 +5,8 @@ import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
 import com.blubank.doctorappointment.dto.CreateAppointmentDTO;
 import com.blubank.doctorappointment.exception.ConcurrentRequestException;
 import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
-import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
-import com.blubank.doctorappointment.mapper.PatientMapper;
+import com.blubank.doctorappointment.mapper.AppointmentSlotMapperImpl;
+import com.blubank.doctorappointment.mapper.PatientMapperImpl;
 import com.blubank.doctorappointment.service.impl.AppointmentFacadeServiceImpl;
 import com.blubank.doctorappointment.util.LockUtil;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +25,6 @@ import static com.blubank.doctorappointment.util.AppointmentData.createAppointme
 import static com.blubank.doctorappointment.util.AppointmentFacadeData.reserveAppointmentDTO;
 import static com.blubank.doctorappointment.util.AppointmentSlotData.*;
 import static com.blubank.doctorappointment.util.PatientData.patient;
-import static com.blubank.doctorappointment.util.PatientData.patientDTO;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,13 +34,13 @@ public class AppointmentFacadeServiceTest {
     private PatientService patientService;
 
     @Spy
-    private PatientMapper patientMapper;
+    private PatientMapperImpl patientMapper;
 
     @Mock
     private AppointmentSlotService appointmentSlotService;
 
     @Spy
-    private AppointmentSlotMapper appointmentSlotMapper;
+    private AppointmentSlotMapperImpl appointmentSlotMapper;
 
     @Mock
     private AppointmentService appointmentService;
@@ -69,11 +68,8 @@ public class AppointmentFacadeServiceTest {
 
 
         when(patientService.get(reserveAppointmentDTO().getPatientDTO().getPhoneNumber())).thenReturn(Optional.of(patient()));
-        when(patientMapper.toDTO(patient())).thenReturn(patientDTO());
 
         when(appointmentSlotService.getById(reserveAppointmentDTO().getAppointmentSlotId())).thenReturn(appointmentSlot());
-
-        when(appointmentSlotMapper.toDTO(appointmentSlot())).thenReturn(appointmentSlotDTO);
 
         appointmentSlotDTO.setIsAvailable(false);
         createAppointmentDTO.setAppointmentSlot(appointmentSlotDTO);
@@ -102,7 +98,6 @@ public class AppointmentFacadeServiceTest {
 
 
         when(patientService.get(reserveAppointmentDTO().getPatientDTO().getPhoneNumber())).thenReturn(Optional.of(patient()));
-        when(patientMapper.toDTO(patient())).thenReturn(patientDTO());
 
         when(appointmentSlotService.getById(reserveAppointmentDTO().getAppointmentSlotId())).thenReturn(takenAppointmentSlot());
 

@@ -1,7 +1,9 @@
 package com.blubank.doctorappointment.service;
 
+import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
 import com.blubank.doctorappointment.exception.*;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
+import com.blubank.doctorappointment.mapper.AppointmentSlotMapperImpl;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.impl.AppointmentSlotServiceImpl;
@@ -27,6 +29,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.blubank.doctorappointment.util.AppointmentSlotData.*;
+import static com.blubank.doctorappointment.util.DoctorData.doctor;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -36,7 +39,7 @@ class AppointmentSlotServiceTest {
     @Mock
     private AppointmentSlotRepository repository;
     @Spy
-    private AppointmentSlotMapper mapper;
+    private AppointmentSlotMapperImpl mapper;
     @Mock
     private LockUtil lockUtil;
 
@@ -59,11 +62,13 @@ class AppointmentSlotServiceTest {
 
         when(repository.findById(ID)).thenReturn(Optional.of(appointmentSlot()));
 
-        Assertions.assertEquals(appointmentSlot(), service.getById(ID));
+        AppointmentSlot appointmentSlot = service.getById(ID);
+
+        Assertions.assertEquals(appointmentSlot(), appointmentSlot);
         Assertions.assertNotNull(appointmentSlot().getId());
-        Assertions.assertEquals(appointmentSlot().getStartTime(), service.getById(ID).getStartTime());
-        Assertions.assertEquals(appointmentSlot().getEndTime(), service.getById(ID).getEndTime());
-        Assertions.assertEquals(appointmentSlot().getIsAvailable(), service.getById(ID).getIsAvailable());
+        Assertions.assertEquals(appointmentSlot().getStartTime(), appointmentSlot.getStartTime());
+        Assertions.assertEquals(appointmentSlot().getEndTime(), appointmentSlot.getEndTime());
+        Assertions.assertEquals(appointmentSlot().getIsAvailable(), appointmentSlot.getIsAvailable());
     }
 
     @Test
@@ -75,9 +80,11 @@ class AppointmentSlotServiceTest {
 
     @Test
     void save_shouldReturnAppointmentSlotDTOList(){
-        List<AppointmentSlot> appointmentSlotList = List.of(appointmentSlot());
+        List<AppointmentSlot> appointmentSlotList = List.of(appointmentSlotWithoutId());
 
-        when(mapper.toDTOList(repository.saveAll(appointmentSlotList))).thenReturn(appointmentSlotDTOList());
+        when(doctorService.getById(ID)).thenReturn(doctor());
+
+        when(repository.saveAll(appointmentSlotList)).thenReturn(appointmentSlotList());
 
         Assertions.assertEquals(appointmentSlotDTOList(), service.save(createAppointmentSlotDTO()));
 
@@ -100,19 +107,21 @@ class AppointmentSlotServiceTest {
     @Test
     void getOpenAppointments_shouldReturnAppointmentSlotDTOList(){
         repository.saveAll(List.of(appointmentSlot(),takenAppointmentSlot()));
-        when(mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable))).thenReturn(appointmentSlotDTOList());
+        when(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable)).thenReturn(appointmentSlotList());
 
-        Assertions.assertEquals(appointmentSlotDTOList(),service.getOpenAppointments(ID,pageable));
+        List<AppointmentSlotDTO> openAppointments = service.getOpenAppointments(ID, pageable);
 
-        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), service.getOpenAppointments(ID,pageable).toArray());
+        Assertions.assertEquals(appointmentSlotDTOList(), openAppointments);
 
-        Assertions.assertEquals(appointmentSlotDTOList().size(), service.getOpenAppointments(ID,pageable).size());
+        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), openAppointments.toArray());
+
+        Assertions.assertEquals(appointmentSlotDTOList().size(), openAppointments.size());
 
     }
 
     @Test
     void getOpenAppointments_whenNoOpenAppointment_shouldReturnEmptyList(){
-        when(mapper.toDTOList(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable))).thenReturn(Collections.EMPTY_LIST);
+        when(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable)).thenReturn(Collections.EMPTY_LIST);
 
         Assertions.assertEquals(Collections.EMPTY_LIST, service.getOpenAppointments(ID,pageable));
 
@@ -160,18 +169,20 @@ class AppointmentSlotServiceTest {
 
     @Test
     void getByDate_shouldReturnAppointmentSlotDTOList(){
-        when(mapper.toDTOList(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable)))
-                .thenReturn(appointmentSlotDTOList());
+        when(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable))
+                .thenReturn(appointmentSlotList());
 
-        Assertions.assertEquals(appointmentSlotDTOList(),service.getByDate(LocalDate.now(),pageable));
+        List<AppointmentSlotDTO> appointmentSlotDTOS = service.getByDate(LocalDate.now(), pageable);
 
-        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), service.getByDate(LocalDate.now(),pageable).toArray());
+        Assertions.assertEquals(appointmentSlotDTOList(), appointmentSlotDTOS);
 
-        Assertions.assertEquals(appointmentSlotDTOList().size(), service.getByDate(LocalDate.now(),pageable).size());
+        Assertions.assertArrayEquals(appointmentSlotDTOList().toArray(), appointmentSlotDTOS.toArray());
+
+        Assertions.assertEquals(appointmentSlotDTOList().size(), appointmentSlotDTOS.size());
     }
     @Test
     void getByDate_whenNoOpenAppointment_shouldReturnEmptyList(){
-        when(mapper.toDTOList(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable)))
+        when(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable))
                 .thenReturn(Collections.EMPTY_LIST);
 
         Assertions.assertEquals(Collections.EMPTY_LIST, service.getByDate(LocalDate.now(),pageable));

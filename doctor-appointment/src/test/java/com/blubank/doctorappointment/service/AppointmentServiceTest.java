@@ -1,6 +1,8 @@
 package com.blubank.doctorappointment.service;
 
+import com.blubank.doctorappointment.dto.AppointmentDTO;
 import com.blubank.doctorappointment.mapper.AppointmentMapper;
+import com.blubank.doctorappointment.mapper.AppointmentMapperImpl;
 import com.blubank.doctorappointment.repository.AppointmentRepository;
 import com.blubank.doctorappointment.service.impl.AppointmentServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +30,7 @@ class AppointmentServiceTest {
     private AppointmentRepository repository;
 
     @Spy
-    private AppointmentMapper mapper;
+    private AppointmentMapperImpl mapper;
 
     private AppointmentService service;
 
@@ -42,13 +44,14 @@ class AppointmentServiceTest {
     @Test
     void findAll_shouldReturnAppointmentDTOList(){
         when(repository.findAll(pageable)).thenReturn(new PageImpl<>(appointmentList()));
-        when(mapper.toDTOList(appointmentList())).thenReturn(appointmentDTOList());
 
-        Assertions.assertEquals(List.of(appointmentDTO()),service.findAll(pageable));
+        List<AppointmentDTO> appointmentDTOS = service.findAll(pageable);
 
-        Assertions.assertArrayEquals(List.of(appointmentDTO()).toArray(), service.findAll(pageable).toArray());
+        Assertions.assertEquals(List.of(appointmentDTO()), appointmentDTOS);
 
-        Assertions.assertEquals(List.of(appointmentDTO()).size(), service.findAll(pageable).size());
+        Assertions.assertArrayEquals(List.of(appointmentDTO()).toArray(), appointmentDTOS.toArray());
+
+        Assertions.assertEquals(List.of(appointmentDTO()).size(), appointmentDTOS.size());
     }
 
     @Test
@@ -61,15 +64,9 @@ class AppointmentServiceTest {
     @Test
     void save_shouldReturnAppointmentDTO(){
 
-        when(mapper.toEntity(createAppointmentDTO())).thenReturn(appointment());
-
-        when(repository.save(appointment())).thenReturn(appointment());
-
-        when(mapper.toDTO(appointment())).thenReturn(appointmentDTO());
+        when(repository.save(appointmentWithoutId())).thenReturn(appointment());
 
         Assertions.assertEquals(appointmentDTO(),service.create(createAppointmentDTO()));
-
-        verify(repository).save(appointment());
 
     }
 }

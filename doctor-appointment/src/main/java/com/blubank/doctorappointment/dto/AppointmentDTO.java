@@ -7,6 +7,7 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode
 public class AppointmentDTO {
+    private Long id;
     private AppointmentSlotDTO appointmentSlot;
     private AppointmentDTO.PatientDTO patient;
 

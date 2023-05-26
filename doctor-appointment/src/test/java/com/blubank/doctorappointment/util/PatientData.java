@@ -29,6 +29,27 @@ public class PatientData {
                 .appointmentList(List.of(PatientDTO.AppointmentDTO.builder().appointmentSlot(appointmentSlotDTO()).build())).build();
     }
 
+    public static PatientDTO patientDTOCreated(){
+        return PatientDTO.builder()
+                .id(1L)
+                .name(NAME)
+                .phoneNumber(PHONE_NUMBER)
+                .build();
+    }
+    public static Patient patientCreated(){
+        return Patient.builder()
+                .id(1L)
+                .name(NAME)
+                .phoneNumber(PHONE_NUMBER)
+                .build();
+    }
+    public static Patient patientCreatedWithoutId(){
+        return Patient.builder()
+                .name(NAME)
+                .phoneNumber(PHONE_NUMBER)
+                .build();
+    }
+
     public static CreatePatientDTO createPatientDTO(){
         return CreatePatientDTO.builder()
                 .name(NAME)

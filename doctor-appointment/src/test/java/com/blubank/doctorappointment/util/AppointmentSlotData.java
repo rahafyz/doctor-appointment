@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.blubank.doctorappointment.util.DoctorData.doctor;
+
 public class AppointmentSlotData {
 
     public static final LocalDate DATE = LocalDate.now();
@@ -24,7 +26,25 @@ public class AppointmentSlotData {
                 .startTime(START_TIME)
                 .endTime(END_TIME)
                 .isAvailable(true)
-                .doctor(Doctor.builder().id(1L).build())
+                .doctor(doctor())
+                .build();
+    }
+
+    public static AppointmentSlot appointmentSlotData(){
+        return AppointmentSlot.builder()
+                .id(1L)
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .isAvailable(true)
+                .build();
+    }
+
+    public static AppointmentSlot appointmentSlotWithoutId(){
+        return AppointmentSlot.builder()
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .isAvailable(true)
+                .doctor(doctor())
                 .build();
     }
     public static AppointmentSlot takenAppointmentSlot(){
@@ -33,7 +53,7 @@ public class AppointmentSlotData {
                 .startTime(START_TIME)
                 .endTime(END_TIME)
                 .isAvailable(false)
-                .doctor(Doctor.builder().id(1L).build())
+                .doctor(doctor())
                 .build();
     }
 
@@ -56,7 +76,8 @@ public class AppointmentSlotData {
     public static CreateAppointmentSlotDTO createAppointmentSlotDTO(){
         return CreateAppointmentSlotDTO.builder()
                 .startTime(CREATE_START_TIME)
-                .endTime(CREATE_END_TIME).build();
+                .endTime(CREATE_END_TIME)
+                .doctorId(1L).build();
     }
     public static CreateAppointmentSlotDTO createInvalidAppointmentSlotDTO(){
         return CreateAppointmentSlotDTO.builder()
