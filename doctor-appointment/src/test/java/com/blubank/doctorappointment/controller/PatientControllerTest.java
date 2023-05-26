@@ -83,7 +83,7 @@ class PatientControllerTest {
         appointmentRepository.save(appointment());
 
         mockMvc.perform(get("/api/v1/patient/appointments")
-                        .param("phoneNumber",PHONE_NUMBER))
+                        .param("phoneNumber", PHONE_NUMBER))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
