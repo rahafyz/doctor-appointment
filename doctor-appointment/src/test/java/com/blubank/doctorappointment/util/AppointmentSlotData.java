@@ -34,7 +34,7 @@ public class AppointmentSlotData {
                 .id(1L)
                 .startTime(START_TIME)
                 .endTime(END_TIME)
-                .isAvailable(true)
+                .isAvailable(false)
                 .build();
     }
 
@@ -63,6 +63,14 @@ public class AppointmentSlotData {
                 .startTime(START_TIME)
                 .endTime(END_TIME)
                 .isAvailable(true)
+                .build();
+    }
+    public static AppointmentSlotDTO takenAppointmentSlotDTO() {
+        return AppointmentSlotDTO.builder()
+                .id(1L)
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .isAvailable(false)
                 .build();
     }
 

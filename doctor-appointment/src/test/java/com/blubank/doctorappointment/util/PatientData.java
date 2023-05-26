@@ -8,6 +8,7 @@ import java.util.List;
 
 import static com.blubank.doctorappointment.util.AppointmentData.appointment;
 import static com.blubank.doctorappointment.util.AppointmentSlotData.appointmentSlotDTO;
+import static com.blubank.doctorappointment.util.AppointmentSlotData.takenAppointmentSlotDTO;
 
 public class PatientData {
     public static final String NAME = "name";
@@ -32,7 +33,7 @@ public class PatientData {
                 .id(1L)
                 .name(NAME)
                 .phoneNumber(PHONE_NUMBER)
-                .appointmentList(List.of(PatientDTO.AppointmentDTO.builder().appointmentSlot(appointmentSlotDTO()).build())).build();
+                .appointmentList(List.of(PatientDTO.AppointmentDTO.builder().appointmentSlot(takenAppointmentSlotDTO()).build())).build();
     }
 
     public static PatientDTO patientDTOCreated() {

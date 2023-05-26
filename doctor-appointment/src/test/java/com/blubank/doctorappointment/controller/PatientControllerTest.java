@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 
 import static com.blubank.doctorappointment.util.AppointmentData.appointment;
 import static com.blubank.doctorappointment.util.AppointmentSlotData.appointmentSlot;
+import static com.blubank.doctorappointment.util.AppointmentSlotData.takenAppointmentSlot;
 import static com.blubank.doctorappointment.util.DoctorData.doctor;
 import static com.blubank.doctorappointment.util.PatientData.patientData;
 import static org.hamcrest.Matchers.hasSize;
@@ -73,6 +74,11 @@ class PatientControllerTest {
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+
+        appointmentRepository.deleteAll();
+        patientRepository.deleteAll();
+        appointmentSlotRepository.deleteAll();
+        doctorRepository.deleteAll();
     }
 
     @Test
@@ -88,8 +94,8 @@ class PatientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].appointmentSlot.startTime").value(appointmentSlot().getStartTime().format(formatter)))
-                .andExpect(jsonPath("$[0].appointmentSlot.endTime").value(appointmentSlot().getEndTime().format(formatter)));
+                .andExpect(jsonPath("$[0].appointmentSlot.startTime").value(takenAppointmentSlot().getStartTime().format(formatter)))
+                .andExpect(jsonPath("$[0].appointmentSlot.endTime").value(takenAppointmentSlot().getEndTime().format(formatter)));
 
     }
 }

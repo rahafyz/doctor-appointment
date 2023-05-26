@@ -38,12 +38,12 @@ public class AppointmentFacadeServiceImpl implements AppointmentFacadeService {
             try {
                 PatientDTO patientDTO = createPatient(reserveDTO.getPatientDTO());
 
-                AppointmentSlotDTO appointmentSlotDTO = getAppointmentSlot(reserveDTO.getAppointmentSlotId());
+                AppointmentSlot appointmentSlot = getAppointmentSlot(reserveDTO.getAppointmentSlotId());
 
-                appointmentSlotDTO.setIsAvailable(false);
+                appointmentSlot.setIsAvailable(false);
 
                 appointmentService.create(CreateAppointmentDTO.builder()
-                        .appointmentSlot(appointmentSlotDTO)
+                        .appointmentSlot(appointmentSlot)
                         .patient(patientDTO).build());
 
             } finally {
@@ -61,10 +61,10 @@ public class AppointmentFacadeServiceImpl implements AppointmentFacadeService {
         return patientService.create(patientDTO);
     }
 
-    private AppointmentSlotDTO getAppointmentSlot(Long appointmentSlotId) {
+    private AppointmentSlot getAppointmentSlot(Long appointmentSlotId) {
         AppointmentSlot appointmentSlot = appointmentSlotService.getById(appointmentSlotId);
         if (Boolean.TRUE.equals(appointmentSlot.getIsAvailable()))
-            return appointmentSlotMapper.toDTO(appointmentSlot);
+            return appointmentSlot;
         throw new ReservedAppointmentSlotException();
     }
 }

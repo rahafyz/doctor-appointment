@@ -7,6 +7,7 @@ import com.blubank.doctorappointment.exception.ConcurrentRequestException;
 import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapperImpl;
 import com.blubank.doctorappointment.mapper.PatientMapperImpl;
+import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.service.impl.AppointmentFacadeServiceImpl;
 import com.blubank.doctorappointment.util.LockUtil;
 import org.junit.jupiter.api.Assertions;
@@ -58,7 +59,7 @@ class AppointmentFacadeServiceTest {
 
     @Test
     void reserve() {
-        AppointmentSlotDTO appointmentSlotDTO = appointmentSlotDTO();
+        AppointmentSlot appointmentSlot = appointmentSlot();
         CreateAppointmentDTO createAppointmentDTO = createAppointmentDTO();
         AppointmentDTO appointmentDTO = appointmentDTO();
 
@@ -71,8 +72,8 @@ class AppointmentFacadeServiceTest {
 
         when(appointmentSlotService.getById(reserveAppointmentDTO().getAppointmentSlotId())).thenReturn(appointmentSlot());
 
-        appointmentSlotDTO.setIsAvailable(false);
-        createAppointmentDTO.setAppointmentSlot(appointmentSlotDTO);
+        appointmentSlot.setIsAvailable(false);
+        createAppointmentDTO.setAppointmentSlot(appointmentSlot);
 
 
         when(appointmentService.create(createAppointmentDTO)).thenReturn(appointmentDTO);

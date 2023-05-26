@@ -72,6 +72,9 @@ class AppointmentSlotControllerTest {
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+
+        repository.deleteAll();
+        doctorRepository.deleteAll();
     }
 
     @Test

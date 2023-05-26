@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "Appointment")
+@Table(name = "appointment")
 @Getter
 @Setter
 @EntityListeners(value = AuditingEntityListener.class)

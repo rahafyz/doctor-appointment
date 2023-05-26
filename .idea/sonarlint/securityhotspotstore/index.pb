@@ -1,8 +1,6 @@
 
 ç
 ]doctor-appointment/src/main/java/com/blubank/doctorappointment/exception/CustomException.java,4/f/4f2bc40733775e32ea2cce2cb24bd515b8879352
-ò
-hdoctor-appointment/src/main/java/com/blubank/doctorappointment/repository/AppointmentSlotRepository.java,e/3/e37f17fd670124b2e6fb7b8a8230fcc6fff360a3
 ï
 edoctor-appointment/src/main/java/com/blubank/doctorappointment/exception/GlobalExceptionHandling.java,a/8/a8454daf7bbdf0a919341ded36df9edafae9b489
 â
@@ -11,18 +9,10 @@ Ydoctor-appointment/src/main/java/com/blubank/doctorappointment/exception/Respon
 `doctor-appointment/src/main/java/com/blubank/doctorappointment/mapper/AppointmentSlotMapper.java,5/a/5a1ec831d142b34324ebe1e3523d700c98f2a141
 ò
 hdoctor-appointment/src/main/java/com/blubank/doctorappointment/controller/AppointmentSlotController.java,e/f/efa4c723ae610d24375bfc503d4125e9ebe2b446
-î
-ddoctor-appointment/src/main/java/com/blubank/doctorappointment/controller/AppointmentController.java,a/7/a79b53aa7990c96c5d794ad68d7c3c36981c2554
-Ö
-Udoctor-appointment/src/main/java/com/blubank/doctorappointment/model/Appointment.java,8/8/8873bbc160166307a506b4326064c58fd6cb0935
-Å
-Qdoctor-appointment/src/main/java/com/blubank/doctorappointment/model/Patient.java,6/4/6465c9327518d52b4a74cf3251770bebcadb9443
 ê
 `doctor-appointment/src/main/java/com/blubank/doctorappointment/repository/PatientRepository.java,b/4/b4a22034894cab7e8359a2598c42210a6cabf9c4
 î
 ddoctor-appointment/src/main/java/com/blubank/doctorappointment/repository/AppointmentRepository.java,3/1/31cda33a6e6d32baf897b3cfef1ecf14594c28ab
-ê
-`doctor-appointment/src/main/java/com/blubank/doctorappointment/controller/PatientController.java,7/7/77519fb4b371b0804da7423577875cf5d6efc188
 à
 Xdoctor-appointment/src/main/java/com/blubank/doctorappointment/mapper/PatientMapper.java,8/a/8aba06ba3e4b4ef916abe6e912412aeda28d9ccc
 å

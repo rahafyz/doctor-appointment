@@ -22,7 +22,6 @@ public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot
 
     List<AppointmentSlot> findByIsAvailableAndStartTimeBetween(Boolean status,LocalDateTime startTime,LocalDateTime endTime, Pageable pageable);
 
-    @Cacheable(key = "#root.methodName + #p0")
     @Override
     Optional<AppointmentSlot> findById(Long id);
 
