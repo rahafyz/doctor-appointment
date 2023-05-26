@@ -1,14 +1,15 @@
 package com.blubank.doctorappointment.service;
 
 import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
-import com.blubank.doctorappointment.exception.*;
-import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
+import com.blubank.doctorappointment.exception.AppointmentSlotNotFoundException;
+import com.blubank.doctorappointment.exception.ConcurrentRequestException;
+import com.blubank.doctorappointment.exception.InvalidTimeException;
+import com.blubank.doctorappointment.exception.ReservedAppointmentSlotException;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapperImpl;
 import com.blubank.doctorappointment.model.AppointmentSlot;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.service.impl.AppointmentSlotServiceImpl;
 import com.blubank.doctorappointment.util.LockUtil;
-import liquibase.pro.packaged.I;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.blubank.doctorappointment.util.AppointmentSlotData.*;
 import static com.blubank.doctorappointment.util.DoctorData.doctor;
@@ -53,7 +52,7 @@ class AppointmentSlotServiceTest {
 
     @BeforeEach
     void init() {
-        service = new AppointmentSlotServiceImpl(repository,lockUtil, mapper,doctorService);
+        service = new AppointmentSlotServiceImpl(repository, lockUtil, mapper, doctorService);
         ReflectionTestUtils.setField(service, "timeInterval", 30);
     }
 
@@ -79,7 +78,7 @@ class AppointmentSlotServiceTest {
     }
 
     @Test
-    void save_shouldReturnAppointmentSlotDTOList(){
+    void save_shouldReturnAppointmentSlotDTOList() {
         List<AppointmentSlot> appointmentSlotList = List.of(appointmentSlotWithoutId());
 
         when(doctorService.getById(ID)).thenReturn(doctor());
@@ -92,12 +91,12 @@ class AppointmentSlotServiceTest {
     }
 
     @Test
-    void save_whenInvalidTime_shouldThrowException(){
+    void save_whenInvalidTime_shouldThrowException() {
         Assertions.assertThrows(InvalidTimeException.class, () -> service.save(createInvalidAppointmentSlotDTO()));
     }
 
     @Test
-    void save_whenShortTime_shouldAddNothing(){
+    void save_whenShortTime_shouldAddNothing() {
 
         Assertions.assertEquals(Collections.emptyList(), service.save(createShortAppointmentSlotDTO()));
 
@@ -105,9 +104,9 @@ class AppointmentSlotServiceTest {
     }
 
     @Test
-    void getOpenAppointments_shouldReturnAppointmentSlotDTOList(){
-        repository.saveAll(List.of(appointmentSlot(),takenAppointmentSlot()));
-        when(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable)).thenReturn(appointmentSlotList());
+    void getOpenAppointments_shouldReturnAppointmentSlotDTOList() {
+        repository.saveAll(List.of(appointmentSlot(), takenAppointmentSlot()));
+        when(repository.findByDoctor_IdAndIsAvailableTrue(ID, pageable)).thenReturn(appointmentSlotList());
 
         List<AppointmentSlotDTO> openAppointments = service.getOpenAppointments(ID, pageable);
 
@@ -120,15 +119,15 @@ class AppointmentSlotServiceTest {
     }
 
     @Test
-    void getOpenAppointments_whenNoOpenAppointment_shouldReturnEmptyList(){
-        when(repository.findByDoctor_IdAndIsAvailableTrue(ID,pageable)).thenReturn(Collections.EMPTY_LIST);
+    void getOpenAppointments_whenNoOpenAppointment_shouldReturnEmptyList() {
+        when(repository.findByDoctor_IdAndIsAvailableTrue(ID, pageable)).thenReturn(Collections.EMPTY_LIST);
 
-        Assertions.assertEquals(Collections.EMPTY_LIST, service.getOpenAppointments(ID,pageable));
+        Assertions.assertEquals(Collections.EMPTY_LIST, service.getOpenAppointments(ID, pageable));
 
     }
 
     @Test
-    void delete_shouldDeleteAppointment(){
+    void delete_shouldDeleteAppointment() {
 
         // Mock lock and lockUtil
         RLock mockLock = mock(RLock.class);
@@ -143,15 +142,16 @@ class AppointmentSlotServiceTest {
     }
 
     @Test
-    void delete_whenAppointmentNotFound_shouldThrowException(){
+    void delete_whenAppointmentNotFound_shouldThrowException() {
         RLock mockLock = mock(RLock.class);
         when(lockUtil.getLockForAppointmentSlot(ID)).thenReturn(mockLock);
         when(repository.findById(ID)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(AppointmentSlotNotFoundException.class, () -> service.delete(ID));
     }
+
     @Test
-    void delete_whenAppointmentIsTaken_shouldThrowException(){
+    void delete_whenAppointmentIsTaken_shouldThrowException() {
         RLock mockLock = mock(RLock.class);
         when(lockUtil.getLockForAppointmentSlot(ID)).thenReturn(mockLock);
         when(repository.findById(ID)).thenReturn(Optional.ofNullable(takenAppointmentSlot()));
@@ -161,15 +161,15 @@ class AppointmentSlotServiceTest {
 
 
     @Test
-    void delete_whenLockIsTaken_shouldThrowException(){
+    void delete_whenLockIsTaken_shouldThrowException() {
         when(lockUtil.getLockForAppointmentSlot(ID)).thenReturn(null);
 
         Assertions.assertThrows(ConcurrentRequestException.class, () -> service.delete(ID));
     }
 
     @Test
-    void getByDate_shouldReturnAppointmentSlotDTOList(){
-        when(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable))
+    void getByDate_shouldReturnAppointmentSlotDTOList() {
+        when(repository.findByIsAvailableAndStartTimeBetween(true, DATE.atStartOfDay(), DATE.atTime(23, 59), pageable))
                 .thenReturn(appointmentSlotList());
 
         List<AppointmentSlotDTO> appointmentSlotDTOS = service.getByDate(LocalDate.now(), pageable);
@@ -180,12 +180,13 @@ class AppointmentSlotServiceTest {
 
         Assertions.assertEquals(appointmentSlotDTOList().size(), appointmentSlotDTOS.size());
     }
+
     @Test
-    void getByDate_whenNoOpenAppointment_shouldReturnEmptyList(){
-        when(repository.findByIsAvailableAndStartTimeBetween(true,DATE.atStartOfDay(),DATE.atTime(23, 59),pageable))
+    void getByDate_whenNoOpenAppointment_shouldReturnEmptyList() {
+        when(repository.findByIsAvailableAndStartTimeBetween(true, DATE.atStartOfDay(), DATE.atTime(23, 59), pageable))
                 .thenReturn(Collections.EMPTY_LIST);
 
-        Assertions.assertEquals(Collections.EMPTY_LIST, service.getByDate(LocalDate.now(),pageable));
+        Assertions.assertEquals(Collections.EMPTY_LIST, service.getByDate(LocalDate.now(), pageable));
     }
 
 }
