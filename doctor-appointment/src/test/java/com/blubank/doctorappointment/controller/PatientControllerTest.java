@@ -76,7 +76,7 @@ class PatientControllerTest {
     }
 
     @Test
-    void getOpenAppointments() throws Exception {
+    void getAppointments() throws Exception {
         doctorRepository.save(doctor());
         appointmentSlotRepository.save(appointmentSlot());
         patientRepository.save(patientData());
