@@ -41,9 +41,6 @@ class AppointmentSlotControllerTest {
     private AppointmentSlotRepository repository;
 
     @Autowired
-    private AppointmentSlotMapper mapper;
-
-    @Autowired
     private AppointmentSlotService service;
 
     @Autowired
@@ -54,9 +51,6 @@ class AppointmentSlotControllerTest {
 
     @Autowired
     GlobalExceptionHandling exceptionHandler;
-
-    @Autowired
-    private LockUtil lockUtil;
 
     @Autowired
     private DoctorRepository doctorRepository;

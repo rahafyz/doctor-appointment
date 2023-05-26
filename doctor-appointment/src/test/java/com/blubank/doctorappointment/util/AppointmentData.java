@@ -19,7 +19,7 @@ public class AppointmentData {
         return Appointment.builder()
                 .id(1L)
                 .appointmentSlot(appointmentSlotData())
-                .patient(Patient.builder().name(PatientData.NAME).phoneNumber(PHONE_NUMBER).build())
+                .patient(Patient.builder().id(1L).name(PatientData.NAME).phoneNumber(PHONE_NUMBER).build())
                 .build();
     }
 

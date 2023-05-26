@@ -20,6 +20,12 @@ public class PatientData {
                 .phoneNumber(PHONE_NUMBER)
                 .appointmentList(List.of(appointment())).build();
     }
+    public static Patient patientData() {
+        return Patient.builder()
+                .id(1L)
+                .name(NAME)
+                .phoneNumber(PHONE_NUMBER).build();
+    }
 
     public static PatientDTO patientDTO() {
         return PatientDTO.builder()

@@ -28,7 +28,7 @@ import static com.blubank.doctorappointment.util.PatientData.patient;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AppointmentFacadeServiceTest {
+class AppointmentFacadeServiceTest {
 
     @Mock
     private PatientService patientService;
