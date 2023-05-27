@@ -1,6 +1,7 @@
 package com.blubank.doctorappointment.controller;
 
 import com.blubank.doctorappointment.exception.GlobalExceptionHandling;
+import com.blubank.doctorappointment.model.Doctor;
 import com.blubank.doctorappointment.repository.AppointmentRepository;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.repository.DoctorRepository;
@@ -83,8 +84,8 @@ class PatientControllerTest {
 
     @Test
     void getAppointments() throws Exception {
-        doctorRepository.save(doctor());
-        appointmentSlotRepository.save(appointmentSlot());
+        Doctor doctor = doctorRepository.save(doctor());
+        appointmentSlotRepository.save(appointmentSlot(doctor));
         patientRepository.save(patientData());
         appointmentRepository.save(appointment());
 

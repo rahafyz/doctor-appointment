@@ -12,4 +12,9 @@ public class AppointmentFacadeData {
                 builder().appointmentSlotId(ID)
                 .patientDTO(createPatientDTO()).build();
     }
+    public static ReserveAppointmentDTO reserveAppointmentDTO(Long appointmentSlotId){
+        return ReserveAppointmentDTO.
+                builder().appointmentSlotId(appointmentSlotId)
+                .patientDTO(createPatientDTO()).build();
+    }
 }

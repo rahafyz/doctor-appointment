@@ -1,6 +1,8 @@
 package com.blubank.doctorappointment.controller;
 
 import com.blubank.doctorappointment.exception.GlobalExceptionHandling;
+import com.blubank.doctorappointment.model.AppointmentSlot;
+import com.blubank.doctorappointment.model.Doctor;
 import com.blubank.doctorappointment.repository.AppointmentRepository;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.repository.DoctorRepository;
@@ -108,12 +110,12 @@ class AppointmentControllerTest {
 
     @Test
     void reserve() throws Exception {
-        doctorRepository.save(doctor());
-        appointmentSlotRepository.save(appointmentSlot());
+        Doctor doctor = doctorRepository.save(doctor());
+        AppointmentSlot appointmentSlot = appointmentSlotRepository.save(appointmentSlot(doctor));
 
         mockMvc.perform(post("/api/v1/appointment")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reserveAppointmentDTO())))
+                        .content(objectMapper.writeValueAsString(reserveAppointmentDTO(appointmentSlot.getId()))))
                 .andExpect(status().isOk());
 
     }

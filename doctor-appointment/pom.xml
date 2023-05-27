@@ -114,6 +114,12 @@
 			<artifactId>redisson-spring-boot-starter</artifactId>
 			<version>3.17.5</version>
 		</dependency>
+		<dependency>
+			<groupId>it.ozimov</groupId>
+			<artifactId>embedded-redis</artifactId>
+			<version>0.7.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

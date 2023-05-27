@@ -22,8 +22,6 @@ public class PatientServiceImpl implements PatientService {
     private final PatientRepository repository;
     private final PatientMapper mapper;
 
-    //exceptions in controller
-
     @Override
     @Transactional(readOnly = true)
     public Optional<Patient> get(String phoneNumber) {

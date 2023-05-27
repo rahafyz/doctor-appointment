@@ -3,6 +3,7 @@ package com.blubank.doctorappointment.util;
 import com.blubank.doctorappointment.dto.AppointmentSlotDTO;
 import com.blubank.doctorappointment.dto.CreateAppointmentSlotDTO;
 import com.blubank.doctorappointment.model.AppointmentSlot;
+import com.blubank.doctorappointment.model.Doctor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +27,16 @@ public class AppointmentSlotData {
                 .endTime(END_TIME)
                 .isAvailable(true)
                 .doctor(doctor())
+                .build();
+    }
+
+    public static AppointmentSlot appointmentSlot(Doctor doctor) {
+        return AppointmentSlot.builder()
+                .id(1L)
+                .startTime(START_TIME)
+                .endTime(END_TIME)
+                .isAvailable(true)
+                .doctor(doctor)
                 .build();
     }
 

@@ -4,6 +4,8 @@ package com.blubank.doctorappointment.controller;
 import com.blubank.doctorappointment.dto.CreateAppointmentSlotDTO;
 import com.blubank.doctorappointment.exception.GlobalExceptionHandling;
 import com.blubank.doctorappointment.mapper.AppointmentSlotMapper;
+import com.blubank.doctorappointment.model.AppointmentSlot;
+import com.blubank.doctorappointment.model.Doctor;
 import com.blubank.doctorappointment.repository.AppointmentSlotRepository;
 import com.blubank.doctorappointment.repository.DoctorRepository;
 import com.blubank.doctorappointment.service.AppointmentSlotService;
@@ -80,10 +82,10 @@ class AppointmentSlotControllerTest {
     @Test
     void save() throws Exception {
 
-        doctorRepository.save(doctor());
+        Doctor doctor = doctorRepository.save(doctor());
 
         CreateAppointmentSlotDTO createAppointmentSlotDTO = createAppointmentSlotDTO();
-        createAppointmentSlotDTO.setDoctorId(1L);
+        createAppointmentSlotDTO.setDoctorId(doctor.getId());
 
         mockMvc.perform(post("/api/v1/appointment-slot")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -99,8 +101,8 @@ class AppointmentSlotControllerTest {
 
     @Test
     void getOpenAppointments() throws Exception {
-        doctorRepository.save(doctor());
-        repository.save(appointmentSlot());
+        Doctor doctor = doctorRepository.save(doctor());
+        repository.save(appointmentSlot(doctor));
 
         mockMvc.perform(get("/api/v1/appointment-slot/appointments/{doctorId}", 1L)
                         .param("page", String.valueOf(pageNumber))
@@ -117,8 +119,8 @@ class AppointmentSlotControllerTest {
 
     @Test
     void getByDate() throws Exception {
-        doctorRepository.save(doctor());
-        repository.save(appointmentSlot());
+        Doctor doctor = doctorRepository.save(doctor());
+        repository.save(appointmentSlot(doctor));
 
         mockMvc.perform(
                         get("/api/v1/appointment-slot/appointments")
@@ -140,12 +142,12 @@ class AppointmentSlotControllerTest {
     @Test
     void testDelete() throws Exception {
 
-        doctorRepository.save(doctor());
-        repository.save(appointmentSlot());
+        Doctor doctor = doctorRepository.save(doctor());
+        AppointmentSlot appointmentSlot = repository.save(appointmentSlot(doctor));
 
         long countBeforeDelete = repository.count();
 
-        mockMvc.perform(delete("/api/v1/appointment-slot/{id}", 1L))
+        mockMvc.perform(delete("/api/v1/appointment-slot/{id}", appointmentSlot.getId()))
                 .andExpect(status().isOk())
                 .andReturn();
 
